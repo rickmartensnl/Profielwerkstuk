@@ -30,6 +30,11 @@ public class APIController implements Controller {
             if (apiVersion == APIVersion.INVALID_VERSION) {
                 return APIVersion.invalidApiVersion();
             }
+
+            if (path.length < 2) {
+                return notFound404();
+            }
+
             Map<APIVersion, Controller> map = groups.get(path[1]);
 
             if (map != null) {
