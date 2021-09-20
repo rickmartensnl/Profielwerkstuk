@@ -1,0 +1,9 @@
+@import url('https://fonts.cdnfonts.com/css/opendyslexic');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.dyslexia-font {
+    font-family: 'OpenDyslexic3', sans-serif;
+}
