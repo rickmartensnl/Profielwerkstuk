@@ -21,8 +21,9 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
         return newSingleThreadExecutor();
     }
 
-    public ProfielwerkstukServerLauncher() {
+    public ProfielwerkstukServerLauncher(String databaseIp, String databasePassword, String databaseUsername, String databaseName) {
         apiController = new APIController();
+        System.out.println(databaseIp);
     }
 
     @Provides
@@ -35,7 +36,12 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
     }
 
     public static void main(String[] args) throws Exception {
-        ProfielwerkstukServerLauncher launcher = new ProfielwerkstukServerLauncher();
+        String databaseIp = System.getenv("DB_IP");
+        String databasePassword = System.getenv("DB_PASSWORD");
+        String databaseUsername = System.getenv("DB_USERNAME");
+        String databaseName = System.getenv("DB_NAME");
+
+        ProfielwerkstukServerLauncher launcher = new ProfielwerkstukServerLauncher(databaseIp, databasePassword, databaseUsername, databaseName);
         launcher.launch(args);
     }
 
