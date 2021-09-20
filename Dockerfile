@@ -9,4 +9,4 @@ WORKDIR /app
 COPY target/Profielwerkstuk.jar ./
 EXPOSE 8080
 
-ENTRYPOINT java $SYS_PROPS -jar Profielwerkstuk.jar
+ENTRYPOINT ["java","-jar","Profielwerkstuk.jar"]
