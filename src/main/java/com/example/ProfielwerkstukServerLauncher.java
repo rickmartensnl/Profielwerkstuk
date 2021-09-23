@@ -2,11 +2,14 @@ package com.example;
 
 import com.example.api.APIController;
 import com.example.database.impl.UserManager;
-import io.activej.http.*;
+import io.activej.http.AsyncServlet;
+import io.activej.http.RoutingServlet;
+import io.activej.http.StaticServlet;
 import io.activej.inject.annotation.Provides;
 import io.activej.launchers.http.MultithreadedHttpServerLauncher;
 import io.activej.worker.annotation.Worker;
 import io.activej.worker.annotation.WorkerId;
+import lombok.Getter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,7 +21,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServerLauncher {
 
     public APIController apiController;
-    public Connection connection;
+    @Getter private static Connection connection;
 
     @Provides
     Executor executor() {
@@ -28,7 +31,6 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
     public ProfielwerkstukServerLauncher(String databaseIp, String databasePassword, String databaseUsername, String databaseName) {
         try {
             connection = DriverManager.getConnection(String.format("jdbc:mysql://%s/%s", databaseIp, databaseName), databaseUsername, databasePassword);
-
             new UserManager();
         } catch (SQLException exception) {
             exception.printStackTrace();
