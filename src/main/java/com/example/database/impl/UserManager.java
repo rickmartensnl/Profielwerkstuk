@@ -1,23 +1,32 @@
 package com.example.database.impl;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import com.example.ProfielwerkstukServerLauncher;
 import com.example.database.Model;
 import com.example.exceptions.DatabaseOfflineException;
+import com.example.exceptions.InvalidEmailSyntaxException;
+import com.example.exceptions.TokenCreateException;
 import com.example.utils.AuthenticationUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class UserManager {
 
@@ -30,7 +39,7 @@ public class UserManager {
         userMap = new HashMap<>();
     }
 
-    public User getUser(UUID uuid) throws DatabaseOfflineException {
+    public @Nullable User getUser(UUID uuid) throws DatabaseOfflineException {
         if (userMap.get(uuid) != null) {
             userMap.get(uuid).setCached(true);
             return userMap.get(uuid);
@@ -41,6 +50,27 @@ public class UserManager {
             userMap.put(uuid, user);
 
             return user;
+        } catch (SQLException exception) {
+            throw new DatabaseOfflineException();
+        }
+    }
+
+    public @Nullable User getUserByEmail(String email) throws InvalidEmailSyntaxException, DatabaseOfflineException {
+        String pattern = "^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))";
+        if (!Pattern.matches(pattern, email)) {
+            throw new InvalidEmailSyntaxException();
+        }
+
+        try {
+            PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("SELECT uuid FROM `users` WHERE email = ?;");
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                return getUser(UUID.fromString(resultSet.getString("uuid")));
+            }
+
+            return null;
         } catch (SQLException exception) {
             throw new DatabaseOfflineException();
         }
@@ -58,6 +88,7 @@ public class UserManager {
         @Getter @Setter private transient Timestamp token_nbf;
 
         @Getter @Setter private transient boolean cached;
+        private transient Auth auth;
 
         public User(UUID uuid) throws SQLException {
             this.uuid = uuid;
@@ -79,6 +110,10 @@ public class UserManager {
 
         public void setPassword(String newPassword) {
             this.password = AuthenticationUtil.hashPassword(newPassword);
+        }
+
+        public boolean isValidPassword(String password) {
+            return AuthenticationUtil.verifyPassword(password, this.password);
         }
 
         public int calculatePublicFlags() {
@@ -118,6 +153,37 @@ public class UserManager {
             }
 
             return gson.toJson(this);
+        }
+
+        public String getAuthObject() throws TokenCreateException {
+            this.auth = new Auth(uuid);
+
+            return auth.getJsonObject();
+        }
+
+    }
+
+    public static class Auth implements Model {
+
+        private String token;
+        private boolean mfa = false;
+
+        public Auth(UUID uuid) throws TokenCreateException {
+            try {
+                this.token = JWT.create()
+                        .withAudience("https://pws.rickmartens.nl")
+                        .withIssuer("https://pws.rickmartens.nl")
+                        .withIssuedAt(new Date())
+                        .withSubject(uuid.toString())
+                        .sign(AuthenticationUtil.getAlgorithm());
+            } catch (JWTCreationException exception){
+                throw new TokenCreateException();
+            }
+        }
+
+        @Override
+        public String getJsonObject() {
+            return new Gson().toJson(this);
         }
 
     }

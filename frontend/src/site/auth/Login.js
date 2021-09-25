@@ -64,8 +64,9 @@ export class Login extends React.Component {
             }
 
             axios.post(`${apiRoute()}/auth/login`, {email: email, password: password}).then(result => {
-                console.log(result);
+                alert('Je gegevens zijn correct. Ik ga je token opslaan.');
             }).catch(error => {
+                alert('Er is iets fout gegaan.');
                 console.error(error);
             });
         } else {

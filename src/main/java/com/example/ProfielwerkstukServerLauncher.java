@@ -43,7 +43,7 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
     @Worker
     AsyncServlet servlet(@WorkerId int workerId, Executor executor) {
         return RoutingServlet.create()
-                .map("/api/*", apiController::runRequest)
+                .map("/api/*", request -> request.loadBody().map($ -> apiController.runRequest(request)))
                 .map("/*", StaticServlet.ofClassPath(executor, "build/")
                         .withMappingNotFoundTo("index.html"));
     }

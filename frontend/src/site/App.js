@@ -43,7 +43,7 @@ export class App extends React.Component {
 }
 
 export function apiRoute() {
-    return 'http://localhost:3000/api/v1'
+    return location.origin + '/api/v1'
 }
 
 export class Child extends React.Component {
