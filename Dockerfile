@@ -6,6 +6,8 @@ RUN mvn -f /home/app/pom.xml clean package
 FROM openjdk:8
 
 WORKDIR /app
+COPY --from=build /home/app/src/main/resources/public.pem /usr/local/lib/app/src/main/resources/public.pem
+COPY --from=build /home/app/src/main/resources/private.pem /usr/local/lib/app/src/main/resources/private.pem
 COPY --from=build /home/app/target/Profielwerkstuk.jar /usr/local/lib/Profielwerkstuk.jar
 EXPOSE 8080
 

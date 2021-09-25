@@ -17,7 +17,7 @@ public class AuthenticationUtil {
     static {
         try {
             privateKey = (RSAPrivateKey) PemUtils.readPrivateKeyFromFile("src/main/resources/private.pem", "RSA");
-            publicKey = (RSAPublicKey) PemUtils.readPublicKeyFromFile("src/main/resources/publicWorks.pem", "RSA");
+            publicKey = (RSAPublicKey) PemUtils.readPublicKeyFromFile("src/main/resources/public.pem", "RSA");
 
             algorithm = Algorithm.RSA256(publicKey, privateKey);
         } catch (IOException e) {
