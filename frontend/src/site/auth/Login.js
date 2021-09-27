@@ -111,14 +111,12 @@ export class Login extends React.Component {
                                     </button>
                                 </div>
                                 <div className="text-center sm:text-right  whitespace-nowrap">
-                                    <Link to="/register">
-                                        <button className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 inline-block align-text-bottom fill-current">
-                                                <path d="M0 0h24v24H0z" fill="none"/>
-                                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                                            </svg>
-                                            <span className="inline-block ml-1">Register</span>
-                                        </button>
+                                    <Link to="/register" className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 inline-block align-text-bottom fill-current">
+                                            <path d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                        </svg>
+                                        <span className="inline-block ml-1">Register</span>
                                     </Link>
                                 </div>
                             </div>
