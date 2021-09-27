@@ -120,18 +120,16 @@ export class Register extends React.Component {
                         <div className="py-5">
                             <div className="grid grid-cols-2 gap-1">
                                 <div className="text-center sm:text-left  whitespace-nowrap">
-                                    <Link to="/login">
-                                        <button className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 inline-block align-text-bottom fill-current">
-                                                <g>
-                                                    <rect fill="none" height="24" width="24"/>
-                                                </g>
-                                                <g>
-                                                    <path d="M11,7L9.6,8.4l2.6,2.6H2v2h10.2l-2.6,2.6L11,17l5-5L11,7z M20,19h-8v2h8c1.1,0,2-0.9,2-2V5c0-1.1-0.9-2-2-2h-8v2h8V19z"/>
-                                                </g>
-                                            </svg>
-                                            <span className="inline-block ml-1">Already an account?</span>
-                                        </button>
+                                    <Link to="/login" type="button" className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 inline-block align-text-bottom fill-current">
+                                            <g>
+                                                <rect fill="none" height="24" width="24"/>
+                                            </g>
+                                            <g>
+                                                <path d="M11,7L9.6,8.4l2.6,2.6H2v2h10.2l-2.6,2.6L11,17l5-5L11,7z M20,19h-8v2h8c1.1,0,2-0.9,2-2V5c0-1.1-0.9-2-2-2h-8v2h8V19z"/>
+                                            </g>
+                                        </svg>
+                                        <span className="inline-block ml-1">Already an account?</span>
                                     </Link>
                                 </div>
                             </div>
@@ -140,7 +138,7 @@ export class Register extends React.Component {
                     <div className="py-5">
                         <div className="grid grid-cols-2 gap-1">
                             <div className="text-center sm:text-left whitespace-nowrap">
-                                <Link to="/" className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
+                                <Link to="/" type="button" className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
                                     <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24" viewBox="0 0 24 24" className="w-4 h-4 inline-block align-text-top fill-current">
                                         <rect fill="none" height="24" width="24"/><
                                         path d="M9,19l1.41-1.41L5.83,13H22V11H5.83l4.59-4.59L9,5l-7,7L9,19z"/>
