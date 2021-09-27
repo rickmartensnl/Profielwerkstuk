@@ -40,9 +40,15 @@ public class UserManager {
     }
 
     public @Nullable User getUser(UUID uuid) throws DatabaseOfflineException {
-        if (userMap.get(uuid) != null) {
+        return getUser(uuid, false);
+    }
+
+    public @Nullable User getUser(UUID uuid, boolean noCache) throws DatabaseOfflineException {
+        if (userMap.get(uuid) != null && !noCache) {
             userMap.get(uuid).setCached(true);
             return userMap.get(uuid);
+        } else if (userMap.get(uuid) != null) {
+            userMap.remove(uuid);
         }
 
         try {
@@ -67,7 +73,7 @@ public class UserManager {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                return getUser(UUID.fromString(resultSet.getString("uuid")));
+                return getUser(UUID.fromString(resultSet.getString("uuid")), true);
             }
 
             return null;

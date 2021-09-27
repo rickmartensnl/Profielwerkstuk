@@ -4,8 +4,10 @@ import com.example.database.impl.UserManager;
 import com.example.exceptions.DatabaseOfflineException;
 import com.example.exceptions.InvalidEmailSyntaxException;
 import com.example.exceptions.TokenCreateException;
+import com.example.middlewares.AuthMiddleware;
 import com.example.utils.AllowMethods;
 import com.example.utils.Controller;
+import com.example.utils.UseMiddleware;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import io.activej.http.HttpMethod;
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 
+@UseMiddleware(AuthMiddleware.class)
 @AllowMethods({HttpMethod.POST})
 public class V1LoginController implements Controller {
 
