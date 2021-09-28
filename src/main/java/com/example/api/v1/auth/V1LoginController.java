@@ -41,7 +41,7 @@ public class V1LoginController implements Controller {
         } catch (InvalidEmailSyntaxException exception) {
             return HttpResponse.ofCode(400).withJson("{\"message\":\"400: Bad Request\",\"code\":0}");
         } catch (DatabaseOfflineException | TokenCreateException exception) {
-            return HttpResponse.ofCode(500).withJson("{}");
+            return HttpResponse.ofCode(500).withJson("{\"message\":\"" + exception.getClass().getName() + "\"}");
         }
     }
 
