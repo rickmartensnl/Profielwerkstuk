@@ -16,14 +16,13 @@ public class APIController implements Controller {
     public final Map<String, Map<APIVersion, Controller>> groups = new HashMap<>();
 
     public APIController() {
-        HashMap<APIVersion, Controller> innerMap = new HashMap<>();
+        HashMap<APIVersion, Controller> innerMapAuth = new HashMap<>();
+        innerMapAuth.put(APIVersion.V1, new V1AuthController());
+        groups.put("auth", innerMapAuth);
 
-        innerMap.put(APIVersion.V1, new V1AuthController());
-        groups.put("auth", innerMap);
-
-        innerMap.clear();
-        innerMap.put(APIVersion.V1, new V1UsersController());
-        groups.put("users", innerMap);
+        HashMap<APIVersion, Controller> innerMapUsers = new HashMap<>();
+        innerMapUsers.put(APIVersion.V1, new V1UsersController());
+        groups.put("users", innerMapUsers);
     }
 
     @Override
