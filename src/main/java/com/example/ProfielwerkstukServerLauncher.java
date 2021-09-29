@@ -9,7 +9,6 @@ import io.activej.inject.annotation.Provides;
 import io.activej.launchers.http.MultithreadedHttpServerLauncher;
 import io.activej.worker.annotation.Worker;
 import io.activej.worker.annotation.WorkerId;
-import lombok.Getter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,16 +20,32 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServerLauncher {
 
     public APIController apiController;
-    @Getter private static Connection connection;
+    private static Connection connection;
+
+    public static Connection getConnection() throws SQLException {
+        if (connection.isClosed()) {
+            startConnection();
+        }
+        return connection;
+    }
+
+    public static void startConnection() throws SQLException {
+        String databaseIp = System.getenv("DB_IP");
+        String databasePassword = System.getenv("DB_PASSWORD");
+        String databaseUsername = System.getenv("DB_USERNAME");
+        String databaseName = System.getenv("DB_NAME");
+
+        connection = DriverManager.getConnection(String.format("jdbc:mysql://%s/%s", databaseIp, databaseName), databaseUsername, databasePassword);
+    }
 
     @Provides
     Executor executor() {
         return newSingleThreadExecutor();
     }
 
-    public ProfielwerkstukServerLauncher(String databaseIp, String databasePassword, String databaseUsername, String databaseName) {
+    public ProfielwerkstukServerLauncher() {
         try {
-            connection = DriverManager.getConnection(String.format("jdbc:mysql://%s/%s", databaseIp, databaseName), databaseUsername, databasePassword);
+            startConnection();
             new UserManager();
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -49,12 +64,7 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
     }
 
     public static void main(String[] args) throws Exception {
-        String databaseIp = System.getenv("DB_IP");
-        String databasePassword = System.getenv("DB_PASSWORD");
-        String databaseUsername = System.getenv("DB_USERNAME");
-        String databaseName = System.getenv("DB_NAME");
-
-        ProfielwerkstukServerLauncher launcher = new ProfielwerkstukServerLauncher(databaseIp, databasePassword, databaseUsername, databaseName);
+        ProfielwerkstukServerLauncher launcher = new ProfielwerkstukServerLauncher();
         launcher.launch(args);
     }
 

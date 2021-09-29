@@ -1,6 +1,7 @@
 package com.example.api;
 
 import com.example.api.v1.auth.V1AuthController;
+import com.example.api.v1.users.V1UsersController;
 import com.example.utils.Controller;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
@@ -19,6 +20,10 @@ public class APIController implements Controller {
 
         innerMap.put(APIVersion.V1, new V1AuthController());
         groups.put("auth", innerMap);
+
+        innerMap.clear();
+        innerMap.put(APIVersion.V1, new V1UsersController());
+        groups.put("users", innerMap);
     }
 
     @Override
