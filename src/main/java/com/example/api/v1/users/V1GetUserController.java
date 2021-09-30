@@ -25,6 +25,14 @@ public class V1GetUserController implements Controller {
     @Override
     public @NotNull HttpResponse runRequest(HttpRequest httpRequest) {
         try {
+            if (uuid == null) {
+                if (AuthMiddleware.getSubject(httpRequest) == null) {
+                    return HttpResponse.ofCode(401).withJson("{\"message\":\"401: Unauthorized\",\"code\":\"no (valid) token\"}");
+                } else {
+                    return HttpResponse.ofCode(400).withJson("{\"message\":\"400: Bad Request\",\"code\":\"no uuid\"}");
+                }
+            }
+
             UserManager.User user = UserManager.getUserManager().getUser(uuid);
 
             if (user == null) {
