@@ -36,7 +36,7 @@ public class APIController implements Controller {
             }
 
             if (path.length < 2) {
-                return notFound404();
+                return notFound404("api_length");
             }
 
             Map<APIVersion, Controller> map = groups.get(path[1]);
@@ -60,7 +60,7 @@ public class APIController implements Controller {
             return controller.runRequest(httpRequest);
         }
 
-        return notFound404();
+        return notFound404("api_nocontroller");
     }
 
     @Nullable

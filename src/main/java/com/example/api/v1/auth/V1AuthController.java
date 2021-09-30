@@ -37,7 +37,7 @@ public class V1AuthController implements Controller {
             return controller.runRequest(httpRequest);
         }
 
-        return notFound404();
+        return notFound404("auth");
     }
 
 }

@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
 
 public interface Controller {
 
-    default HttpResponse notFound404() {
-        return HttpResponse.notFound404().withJson("{\"message\":\"404: Not Found\",\"code\":0}");
+    default HttpResponse notFound404(String code) {
+        return HttpResponse.notFound404().withJson("{\"message\":\"404: Not Found\",\"code\":\"" + code + "\"}");
     }
 
     default HttpResponse methodNotAllowed405() {

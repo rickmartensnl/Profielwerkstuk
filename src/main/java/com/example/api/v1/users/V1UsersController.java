@@ -44,7 +44,7 @@ public class V1UsersController implements Controller {
             }
         }
 
-        return notFound404();
+        return notFound404("users");
     }
 
 }
