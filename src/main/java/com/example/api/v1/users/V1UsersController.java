@@ -40,11 +40,10 @@ public class V1UsersController implements Controller {
                 callMiddleware(httpRequest, myController);
 
                 return myController.runRequest(httpRequest);
-            } catch (Exception ignored) {
+            } catch (Exception exception) {
+                return HttpResponse.ofCode(500).withJson("{\"message\":\"" + exception.getClass().getName() + "\"}");
             }
         }
-
-        return notFound404("users");
     }
 
 }
