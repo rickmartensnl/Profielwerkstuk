@@ -1,8 +1,15 @@
 package com.example.middlewares;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.exceptions.TokenVerifyException;
+import com.example.utils.AuthenticationUtil;
 import com.example.utils.Controller;
+import io.activej.http.HttpHeaders;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 public class AuthMiddleware extends Middleware {
 
@@ -12,4 +19,16 @@ public class AuthMiddleware extends Middleware {
 
         return super.handle(httpRequest, controller);
     }
+
+    public static @Nullable UUID getSubject(HttpRequest httpRequest) {
+        String authHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        try {
+            DecodedJWT decodedJWT = AuthenticationUtil.tokenToBody(authHeader);
+
+            return UUID.fromString(decodedJWT.getSubject());
+        } catch (TokenVerifyException exception) {
+            return null;
+        }
+    }
+
 }

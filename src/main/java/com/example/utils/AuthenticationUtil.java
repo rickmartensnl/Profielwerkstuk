@@ -1,7 +1,12 @@
 package com.example.utils;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.exceptions.TokenVerifyException;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -31,6 +36,17 @@ public class AuthenticationUtil {
 
     public static boolean verifyPassword(String password, String hash) {
         return BCrypt.verifyer().verify(password.toCharArray(), hash).verified;
+    }
+
+    public static DecodedJWT tokenToBody(String token) throws TokenVerifyException {
+        try {
+            JWTVerifier jwtVerifier = JWT.require(algorithm)
+                    .withIssuer("https://pws.rickmartens.nl")
+                    .build();
+            return jwtVerifier.verify(token);
+        } catch (JWTVerificationException exception) {
+            throw new TokenVerifyException();
+        }
     }
 
 }

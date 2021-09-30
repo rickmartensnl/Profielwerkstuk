@@ -35,7 +35,10 @@ public class V1UsersController implements Controller {
             return controller.runRequest(httpRequest);
         } else {
             try {
-                Controller myController = fallbackController.getDeclaredConstructor(String.class).newInstance(controllerName);
+                Controller myController = fallbackController.getDeclaredConstructor(String.class, HttpRequest.class).newInstance(controllerName, httpRequest);
+
+                callMiddleware(httpRequest, myController);
+
                 return myController.runRequest(httpRequest);
             } catch (Exception ignored) {
             }
