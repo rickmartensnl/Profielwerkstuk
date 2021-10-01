@@ -26,9 +26,10 @@ public class AuthMiddleware extends Middleware {
             DecodedJWT decodedJWT = AuthenticationUtil.tokenToBody(authHeader);
 
             return UUID.fromString(decodedJWT.getSubject());
-        } catch (TokenVerifyException exception) {
-            return null;
+        } catch (TokenVerifyException ignored) {
         }
+
+        return null;
     }
 
 }
