@@ -8,6 +8,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.exceptions.TokenVerifyException;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.security.interfaces.RSAPrivateKey;
@@ -38,7 +39,11 @@ public class AuthenticationUtil {
         return BCrypt.verifyer().verify(password.toCharArray(), hash).verified;
     }
 
-    public static DecodedJWT tokenToBody(String token) throws TokenVerifyException {
+    public static @Nullable DecodedJWT tokenToBody(String token) throws TokenVerifyException {
+        if (token == null) {
+            return null;
+        }
+
         try {
             JWTVerifier jwtVerifier = JWT.require(algorithm)
                     .withIssuer("https://pws.rickmartens.nl")
