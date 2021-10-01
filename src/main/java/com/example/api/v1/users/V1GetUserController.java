@@ -15,6 +15,7 @@ public class V1GetUserController implements Controller {
     private final UUID uuid;
 
     public V1GetUserController(String uuid, HttpRequest httpRequest) {
+        System.out.println(uuid);
         if (uuid.equalsIgnoreCase("@me")) {
             this.uuid = AuthMiddleware.getSubject(httpRequest);
         } else {
@@ -39,8 +40,17 @@ public class V1GetUserController implements Controller {
                 return HttpResponse.notFound404().withJson("{\"message\":\"404: Not Found\",\"code\":\"user not found\"}");
             }
 
-            String userObject = user.getUuid() == AuthMiddleware.getSubject(httpRequest) ? user.getJsonObject(true) : user.getJsonObject(false);
-            return HttpResponse.ok200().withJson(userObject);
+            UUID authUUID = AuthMiddleware.getSubject(httpRequest);
+
+            if (authUUID == null) {
+                return HttpResponse.ok200().withJson(user.getJsonObject());
+            }
+
+            if (user.getUuid().equals(authUUID)) {
+                return HttpResponse.ok200().withJson(user.getJsonObject(true));
+            }
+
+            return HttpResponse.ok200().withJson(user.getJsonObject());
         } catch (DatabaseOfflineException exception) {
             return HttpResponse.ofCode(500).withJson("{\"message\":\"" + exception.getClass().getName() + "\"}");
         }

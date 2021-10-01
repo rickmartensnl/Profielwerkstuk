@@ -35,7 +35,6 @@ public class V1UsersController implements Controller {
             return controller.runRequest(httpRequest);
         } else {
             try {
-                System.out.println(controllerName + ";" + controllerName.getClass().getName() + ";" + httpRequest.getRelativePath() + ";" + httpRequest.getClass().getName());
                 Controller myController = fallbackController.getDeclaredConstructor(String.class, HttpRequest.class).newInstance(controllerName, httpRequest);
 
                 callMiddleware(httpRequest, myController);
