@@ -15,7 +15,8 @@ public class V1SessionController implements Controller {
 
     @Override
     public @NotNull HttpResponse runRequest(HttpRequest httpRequest) {
-        return HttpResponse.ok200().withPlainText(httpRequest.getRelativePath());
+
+        return HttpResponse.ok200().withPlainText(httpRequest.getRelativePath() + httpRequest.getQueryParameters());
     }
 
 }

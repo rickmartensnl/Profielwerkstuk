@@ -49,9 +49,9 @@ public class V1GetUserController implements Controller {
             String[] path = httpRequest.getRelativePath().toLowerCase().split("/");
             String controllerName;
             if (isVersioned(httpRequest)) {
-                controllerName = path[3];
+                controllerName = path.length > 4 ? path[3] : null;
             } else {
-                controllerName = path[2];
+                controllerName = path.length > 3 ? path[2] : null;
             }
 
             Controller controller = controllers.get(controllerName);
