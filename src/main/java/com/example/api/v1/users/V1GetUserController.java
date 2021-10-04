@@ -5,6 +5,7 @@ import com.example.database.impl.UserManager;
 import com.example.exceptions.DatabaseOfflineException;
 import com.example.middlewares.AuthMiddleware;
 import com.example.utils.Controller;
+import com.example.utils.UserController;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +22,6 @@ public class V1GetUserController implements Controller {
     public V1GetUserController(String uuid, HttpRequest httpRequest) {
         controllers.put("sessions", new V1SessionController());
 
-        System.out.println(uuid);
         if (uuid.equalsIgnoreCase("@me")) {
             this.uuid = AuthMiddleware.getSubject(httpRequest);
         } else {
@@ -61,9 +61,19 @@ public class V1GetUserController implements Controller {
                     return methodNotAllowed405();
                 }
 
-                callMiddleware(httpRequest, controller);
+                if (controller instanceof UserController) {
+                    UserController userController = (UserController) controller;
 
-                return controller.runRequest(httpRequest);
+                    userController.setUser(user);
+                }
+
+                HttpResponse res = callMiddleware(httpRequest, controller);
+
+                if (res == null) {
+                    return controller.runRequest(httpRequest);
+                } else {
+                    return res;
+                }
             } else {
                 UUID authUUID = AuthMiddleware.getSubject(httpRequest);
 

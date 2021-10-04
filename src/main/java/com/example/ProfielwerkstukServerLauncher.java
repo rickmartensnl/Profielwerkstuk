@@ -1,6 +1,7 @@
 package com.example;
 
 import com.example.api.APIController;
+import com.example.database.impl.UserHistoryManager;
 import com.example.database.impl.UserManager;
 import io.activej.http.AsyncServlet;
 import io.activej.http.RoutingServlet;
@@ -47,6 +48,7 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
         try {
             startConnection();
             new UserManager();
+            new UserHistoryManager();
         } catch (SQLException exception) {
             exception.printStackTrace();
         }

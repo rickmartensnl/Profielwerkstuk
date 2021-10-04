@@ -5,6 +5,7 @@ import com.example.middlewares.Middleware;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -35,10 +36,10 @@ public interface Controller {
         return Arrays.stream(controllerClass.getAnnotation(AllowMethods.class).value()).anyMatch(httpMethod -> httpMethod == httpRequest.getMethod());
     }
 
-    default void callMiddleware(HttpRequest httpRequest, Controller controller) {
+    default @Nullable HttpResponse callMiddleware(HttpRequest httpRequest, Controller controller) {
         Class<? extends Controller> controllerClass = controller.getClass();
         if (!controllerClass.isAnnotationPresent(UseMiddleware.class)) {
-            return;
+            return null;
         }
 
         Class[] middlewares = controllerClass.getAnnotation(UseMiddleware.class).value();
@@ -46,11 +47,13 @@ public interface Controller {
         for (Class middlewareClass : middlewares) {
             try {
                 Middleware middleware = (Middleware) middlewareClass.newInstance();
-                middleware.handle(httpRequest, controller);
+                return middleware.handle(httpRequest, controller);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        return null;
     }
 
     default boolean isVersioned(HttpRequest httpRequest) {

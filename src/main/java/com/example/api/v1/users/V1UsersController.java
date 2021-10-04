@@ -30,16 +30,24 @@ public class V1UsersController implements Controller {
                 return methodNotAllowed405();
             }
 
-            callMiddleware(httpRequest, controller);
+            HttpResponse res = callMiddleware(httpRequest, controller);
 
-            return controller.runRequest(httpRequest);
+            if (res == null) {
+                return controller.runRequest(httpRequest);
+            } else {
+                return res;
+            }
         } else {
             try {
                 Controller myController = fallbackController.getDeclaredConstructor(String.class, HttpRequest.class).newInstance(controllerName, httpRequest);
 
-                callMiddleware(httpRequest, myController);
+                HttpResponse res = callMiddleware(httpRequest, myController);
 
-                return myController.runRequest(httpRequest);
+                if (res == null) {
+                    return myController.runRequest(httpRequest);
+                } else {
+                    return res;
+                }
             } catch (Exception exception) {
                 exception.printStackTrace();
                 return HttpResponse.ofCode(500).withJson("{\"message\":\"" + exception.getClass().getName() + "\"}");

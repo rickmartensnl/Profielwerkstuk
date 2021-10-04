@@ -32,9 +32,13 @@ public class V1AuthController implements Controller {
                 return methodNotAllowed405();
             }
 
-            callMiddleware(httpRequest, controller);
+            HttpResponse res = callMiddleware(httpRequest, controller);
 
-            return controller.runRequest(httpRequest);
+            if (res == null) {
+                return controller.runRequest(httpRequest);
+            } else {
+                return res;
+            }
         }
 
         return notFound404("auth");
