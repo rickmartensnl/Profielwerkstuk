@@ -2,11 +2,13 @@ FROM node:14 AS prebuild
 COPY frontend /home/app/frontend
 WORKDIR /home/app/frontend
 RUN npm i && npm run build
-WORKDIR /../../../
+WORKDIR /
 
 FROM maven:3.6.0-jdk-11-slim AS build
-COPY src /home/app/src
-COPY pom.xml /home/app
+COPY src/main/java /home/app/src/main/java
+COPY src/main/resources/private.pem /home/app/src/main/resources/private.pem
+COPY src/main/resources/public.pem /home/app/src/main/resources/public.pem
+COPY pom.xml /home/app/
 RUN mvn -f /home/app/pom.xml clean package
 
 FROM openjdk:8
