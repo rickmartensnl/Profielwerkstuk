@@ -5,8 +5,8 @@ RUN npm i && npm run build
 WORKDIR /
 
 FROM maven:3.6.0-jdk-11-slim AS build
-COPY --from=prebuild /home/app/src/main/resources/build /app/src/main/resources/build
 COPY src /home/app/src
+COPY --from=prebuild /home/app/src/main/resources/build /home/app/src/main/resources/build
 COPY pom.xml /home/app
 RUN mvn -f /home/app/pom.xml clean package
 
