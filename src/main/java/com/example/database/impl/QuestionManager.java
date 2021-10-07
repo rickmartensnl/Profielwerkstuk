@@ -1,10 +1,20 @@
 package com.example.database.impl;
 
+import com.example.ProfielwerkstukServerLauncher;
 import com.example.database.Model;
+import com.example.exceptions.DatabaseOfflineException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
+import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class QuestionManager {
@@ -15,24 +25,51 @@ public class QuestionManager {
         questionManager = this;
     }
 
-    public Question getQuestion(UUID uuid) {
-        return new Question(uuid);
+    public Question getQuestion(UUID uuid) throws DatabaseOfflineException {
+        try {
+            return new Question(uuid);
+        } catch (SQLException e) {
+            throw new DatabaseOfflineException();
+        }
     }
 
     public static class Question implements Model {
 
         @Expose @Getter private final UUID uuid;
-        @Getter @Setter private String question;
-        @Getter @Setter private String information;
-        @Getter @Setter private int flags;
+        @Expose @Getter @Setter private String question;
+        @Expose @Getter @Setter private String information;
+        @Expose @Getter @Setter private int flags;
+        @Expose @Getter @Setter private QuestionAnswer answer;
+        @Expose @Getter @Setter private Map<String, QuestionVariable> variables;
+        @Getter @Setter private QuestionVariable tips;
+        @Expose @Getter @Setter private UserManager.User creator;
 
-        public Question(UUID uuid) {
+        public Question(UUID uuid) throws SQLException, DatabaseOfflineException {
             this.uuid = uuid;
+            this.variables = new HashMap<>();
+
+            PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("SELECT * FROM `questions` WHERE uuid = ?;");
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                this.question = resultSet.getString("question");
+                this.information = resultSet.getString("information");
+                this.flags = resultSet.getInt("flags");
+                this.answer = new Gson().fromJson(resultSet.getString("answer"), QuestionManager.QuestionAnswer.class);
+                this.variables = (Map<String, QuestionVariable>) new Gson().fromJson(resultSet.getString("variables"), variables.getClass());
+                this.creator = UserManager.getUserManager().getUser(UUID.fromString(resultSet.getString("creator_uuid")));
+            }
         }
 
         @Override
         public String getJsonObject() {
-            return null;
+            Gson gson = new GsonBuilder()
+                    .serializeNulls()
+                    .excludeFieldsWithoutExposeAnnotation()
+                    .create();
+
+            return gson.toJson(this);
         }
 
     }
@@ -40,6 +77,7 @@ public class QuestionManager {
     public static class QuestionAnswer {
 
         @Getter private final Type type;
+        @Getter @Setter private String unit;
         @Getter @Setter private String calculation;
 
         public QuestionAnswer(Type type, String calculation) {
@@ -63,10 +101,11 @@ public class QuestionManager {
 
     public static class QuestionVariable {
 
-        @Getter private final Type type;
+        @Expose @Getter private final Type type;
         private String value;
-        @Getter @Setter private String unit;
-        @Getter @Setter private String theValue;
+        @Expose @Getter @Setter private String unit;
+        @Expose @Getter @Setter private String theValue;
+        private String depends;
 
         public QuestionVariable(Type type) {
             this.type = type;

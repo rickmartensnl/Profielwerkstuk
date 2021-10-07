@@ -13,10 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class UserHistoryManager {
 
@@ -34,18 +31,20 @@ public class UserHistoryManager {
         }
     }
 
-    public UserHistory getUnfinished(UserManager.User user) throws DatabaseOfflineException {
+    public UserHistory[] getUnfinished(UserManager.User user) throws DatabaseOfflineException {
         try {
             PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("SELECT uuid FROM `users_play_history` WHERE flags = ? AND user_uuid = ?;");
             preparedStatement.setInt(1, 1);
             preparedStatement.setString(2, user.getUuid().toString());
             ResultSet resultSet = preparedStatement.executeQuery();
 
+            List<UserHistory> returnable = new ArrayList<>();
+
             while (resultSet.next()) {
-                return new UserHistory(UUID.fromString(resultSet.getString("uuid")));
+                returnable.add(new UserHistory(UUID.fromString(resultSet.getString("uuid"))));
             }
 
-            return null;
+            return returnable.toArray(new UserHistory[0]);
         } catch (SQLException exception) {
             throw new DatabaseOfflineException();
         }
@@ -54,12 +53,12 @@ public class UserHistoryManager {
     public static class UserHistory implements Model {
 
         @Expose @Getter private final UUID uuid;
-        @Getter @Setter private String answer;
-        @Getter @Setter private int flags;
-        @Getter @Setter private double correctPercentage;
-        @Getter @Setter private QuestionManager.QuestionVariable[] variableValues;
-        @Getter @Setter private QuestionManager.Question question;
-        @Getter @Setter private UserManager.User user;
+        @Expose @Getter @Setter private String answer;
+        @Expose @Getter @Setter private int flags;
+        @Expose @Getter @Setter private double correctPercentage;
+        @Expose @Getter @Setter private QuestionManager.QuestionVariable[] variableValues;
+        @Expose @Getter @Setter private QuestionManager.Question question;
+        @Expose @Getter @Setter private UserManager.User user;
 
         public UserHistory(UUID uuid) throws SQLException, DatabaseOfflineException {
             this.uuid = uuid;
@@ -78,7 +77,7 @@ public class UserHistoryManager {
             }
         }
 
-        public UserHistory(UserManager.User user, @Nullable UUID subjectId, @Nullable UUID chapterId, @Nullable UUID paragraphId, @Nullable UUID questionId) throws SQLException {
+        public UserHistory(UserManager.User user, @Nullable UUID subjectId, @Nullable UUID chapterId, @Nullable UUID paragraphId, @Nullable UUID questionId) throws SQLException, DatabaseOfflineException {
             this.uuid = UUID.randomUUID();
             this.answer = null;
             this.flags = 1;
@@ -103,7 +102,7 @@ public class UserHistoryManager {
                 preparedStatement.setInt(3, this.flags);
                 preparedStatement.setNull(4, 3);
                 preparedStatement.setString(5, new Gson().toJson(this.variableValues));
-                preparedStatement.setString(6, this.question.toString());
+                preparedStatement.setString(6, this.question.getUuid().toString());
                 preparedStatement.setString(7, this.user.getUuid().toString());
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {
@@ -115,6 +114,7 @@ public class UserHistoryManager {
         public String getJsonObject() {
             Gson gson = new GsonBuilder()
                     .serializeNulls()
+                    .excludeFieldsWithoutExposeAnnotation()
                     .create();
             return gson.toJson(this);
         }

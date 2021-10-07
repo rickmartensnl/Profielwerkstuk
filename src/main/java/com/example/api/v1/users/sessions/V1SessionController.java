@@ -6,6 +6,8 @@ import com.example.middlewares.AuthMiddleware;
 import com.example.utils.AllowMethods;
 import com.example.utils.UseMiddleware;
 import com.example.utils.UserController;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.activej.http.HttpMethod;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
@@ -27,15 +29,21 @@ public class V1SessionController implements UserController {
             if (sessionRequestType == SessionRequestType.NEW) {
                 return HttpResponse.ok201().withJson(UserHistoryManager.getUserHistoryManager().createNewUserHistory(getUser()).getJsonObject());
             } else {
-                UserHistoryManager.UserHistory userHistory = UserHistoryManager.getUserHistoryManager().getUnfinished(getUser());
+                UserHistoryManager.UserHistory[] userHistory = UserHistoryManager.getUserHistoryManager().getUnfinished(getUser());
 
-                if (userHistory == null) {
+                if (userHistory.length == 0) {
                     return HttpResponse.ok201().withJson(UserHistoryManager.getUserHistoryManager().createNewUserHistory(getUser()).getJsonObject());
                 }
 
-                return HttpResponse.ok200().withJson(userHistory.getJsonObject());
+                Gson gson = new GsonBuilder()
+                        .serializeNulls()
+                        .excludeFieldsWithoutExposeAnnotation()
+                        .create();
+
+                return HttpResponse.ok200().withJson(gson.toJson(userHistory));
             }
         } catch (Exception exception) {
+            exception.printStackTrace();
             return HttpResponse.ofCode(500).withPlainText(String.valueOf(exception));
         }
     }
