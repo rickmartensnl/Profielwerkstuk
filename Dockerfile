@@ -2,7 +2,7 @@ FROM node:14 AS prebuild
 COPY frontend /home/app/frontend
 WORKDIR /home/app/frontend
 RUN npm i && npm run build
-WORKDIR /
+WORKDIR /../../../
 
 FROM maven:3.6.0-jdk-11-slim AS build
 COPY src /home/app/src
