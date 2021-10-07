@@ -1,8 +1,8 @@
 FROM node:14 AS prebuild
 COPY frontend /home/app/frontend
-RUN cd /home/app/frontend
+WORKDIR /home/app/frontend
 RUN npm i && npm run build
-RUN cd /../../../
+WORKDIR /
 
 FROM maven:3.6.0-jdk-11-slim AS build
 COPY src /home/app/src
