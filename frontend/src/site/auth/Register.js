@@ -2,13 +2,12 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { apiRoute } from "../App";
+import MetaTags from "react-meta-tags";
 
 export class Register extends React.Component {
 
     constructor(props) {
         super(props);
-
-        document.title = 'Profielwerkstuk — Register';
 
         this.state = {
             email: '',
@@ -102,6 +101,10 @@ export class Register extends React.Component {
     render() {
         return(
             <div className="min-h-screen bg-gray-100 flex flex-col justify-center sm:py-12">
+                <MetaTags>
+                    <title>Profielwerkstuk — Register</title>
+                    <meta name="description" content="Create your account for a modernized learning experience." />
+                </MetaTags>
                 <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
                     <h1 className="font-bold text-center text-2xl mb-5">Profielwerkstuk</h1>
                     <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200">

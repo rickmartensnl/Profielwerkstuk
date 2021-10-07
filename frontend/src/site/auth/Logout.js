@@ -1,12 +1,10 @@
 import React from 'react';
-import {Link} from "react-router-dom";
+import MetaTags from "react-meta-tags";
 
 export class Logout extends React.Component {
 
     constructor(props) {
         super(props);
-
-        document.title = 'Profielwerkstuk — Logout';
     }
 
     componentDidMount() {
@@ -17,6 +15,10 @@ export class Logout extends React.Component {
     render() {
         return(
             <div className="min-h-screen bg-gray-100 flex flex-col justify-center sm:py-12">
+                <MetaTags>
+                    <title>Profielwerkstuk — Logout</title>
+                    <meta name="description" content="Logout from your modernized learning experience." />
+                </MetaTags>
                 <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
                     <h1 className="font-bold text-center text-2xl mb-5">Profielwerkstuk</h1>
                     <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200">

@@ -1,4 +1,5 @@
 import React from 'react';
+import MetaTags from "react-meta-tags";
 
 export class Dyslexia extends React.Component {
 
@@ -21,6 +22,10 @@ export class Dyslexia extends React.Component {
     render() {
         return(
             <div>
+                <MetaTags>
+                    <title>Profielwerkstuk — Dyslexia</title>
+                    <meta name="description" content="Dyslexia test lol, fun." />
+                </MetaTags>
                 <p className={this.state.dyslexia ? 'dyslexia-font' : ''}>
                     Test I am testing very much
                 </p>
