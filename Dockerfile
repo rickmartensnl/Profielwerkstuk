@@ -1,3 +1,9 @@
+FROM node:14 AS prebuild
+COPY frontend /home/app/frontend
+RUN cd /home/app/frontend
+RUN npm i && npm run build
+RUN cd /../../../
+
 FROM maven:3.6.0-jdk-11-slim AS build
 COPY src /home/app/src
 COPY pom.xml /home/app

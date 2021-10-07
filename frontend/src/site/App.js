@@ -6,7 +6,7 @@ import {
     Link
 } from "react-router-dom";
 import { Home } from './Home';
-import { Login, Register } from './auth/Auth';
+import { Login, Logout, Register } from './auth/Auth';
 import { Dyslexia } from './Dyslexia';
 
 export class App extends React.Component {
@@ -17,7 +17,10 @@ export class App extends React.Component {
                     <Route exact path="/" component={Home} />
 
                     <Route exact path="/login" component={Login} />
+                    <Route exact path="/logout" component={Logout} />
                     <Route exact path="/register" component={Register} />
+
+                    <Route exact path="/app" component={Child} />
 
                     <Route exact path="/subjects" component={Child} />
                     <Route exact path="/subjects/:id" component={Child} />

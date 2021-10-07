@@ -54,11 +54,11 @@ public class UserHistoryManager {
     public static class UserHistory implements Model {
 
         @Expose @Getter private final UUID uuid;
-        @Getter @Setter private JsonArray answer;
+        @Getter @Setter private String answer;
         @Getter @Setter private int flags;
         @Getter @Setter private double correctPercentage;
-        @Getter @Setter private JsonArray variableValues;
-        @Getter @Setter private UUID question;
+        @Getter @Setter private QuestionManager.QuestionVariable[] variableValues;
+        @Getter @Setter private QuestionManager.Question question;
         @Getter @Setter private UserManager.User user;
 
         public UserHistory(UUID uuid) throws SQLException, DatabaseOfflineException {
@@ -72,7 +72,8 @@ public class UserHistoryManager {
                 this.answer = null;
                 this.flags = resultSet.getInt("flags");
                 this.correctPercentage = resultSet.getDouble("correctPercentage");
-                this.question = UUID.fromString(resultSet.getString("question_uuid"));
+                this.question = QuestionManager.getQuestionManager().getQuestion(UUID.fromString(resultSet.getString("question_uuid")));
+                this.variableValues = new Gson().fromJson(resultSet.getString("variableValues"), QuestionManager.QuestionVariable[].class);
                 this.user = UserManager.getUserManager().getUser(UUID.fromString(resultSet.getString("user_uuid")));
             }
         }
@@ -91,7 +92,7 @@ public class UserHistoryManager {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
                 while (resultSet.next()) {
-                    this.question = UUID.fromString(resultSet.getString("uuid"));
+                    this.question = QuestionManager.getQuestionManager().getQuestion(UUID.fromString(resultSet.getString("uuid")));
                 }
             }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import axios from "axios";
-import {apiRoute} from "../App";
+import { apiRoute } from "../App";
 
 export class Login extends React.Component {
 
@@ -21,6 +21,25 @@ export class Login extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleForgot = this.handleForgot.bind(this);
+    }
+
+    componentDidMount() {
+        console.log("Checking if token is set.");
+        let token = localStorage.getItem("token");
+
+        if (token == null) {
+            return;
+        }
+
+        let config = {
+            headers: {
+                "Authorization": token
+            }
+        };
+
+        axios.get(`${apiRoute()}/users/@me`, config).then(result => {
+            this.props.history.push('/app');
+        }).catch(console.warn);
     }
 
     handleChange(event) {
@@ -64,7 +83,8 @@ export class Login extends React.Component {
             }
 
             axios.post(`${apiRoute()}/auth/login`, {email: email, password: password}).then(result => {
-                alert('Je gegevens zijn correct. Ik ga je token opslaan.');
+                localStorage.setItem("token", result.data.token);
+                this.props.history.push('/app');
             }).catch(error => {
                 alert('Er is iets fout gegaan.');
                 console.error(error);

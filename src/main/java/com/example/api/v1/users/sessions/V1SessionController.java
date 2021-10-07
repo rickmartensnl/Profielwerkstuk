@@ -13,8 +13,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-
 @UseMiddleware({ AuthMiddleware.class })
 @AllowMethods({ HttpMethod.GET, HttpMethod.POST, HttpMethod.PATCH })
 public class V1SessionController implements UserController {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import axios from "axios";
-import {apiRoute} from "../App";
+import { apiRoute } from "../App";
 
 export class Register extends React.Component {
 
@@ -21,6 +21,25 @@ export class Register extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleForgot = this.handleForgot.bind(this);
+    }
+
+    componentDidMount() {
+        console.log("Checking if token is set.");
+        let token = localStorage.getItem("token");
+
+        if (token == null) {
+            return;
+        }
+
+        let config = {
+            headers: {
+                "Authorization": token
+            }
+        };
+
+        axios.get(`${apiRoute()}/users/@me`, config).then(result => {
+            this.props.history.push('/app');
+        }).catch(console.warn);
     }
 
     handleChange(event) {
