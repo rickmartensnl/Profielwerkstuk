@@ -3,13 +3,18 @@ package com.example.database.impl;
 import com.example.ProfielwerkstukServerLauncher;
 import com.example.database.Model;
 import com.example.exceptions.DatabaseOfflineException;
+import com.example.utils.QuestionUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
+import org.junit.Assert;
 
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,7 +51,6 @@ public class QuestionManager {
 
         public Question(UUID uuid) throws SQLException, DatabaseOfflineException {
             this.uuid = uuid;
-            this.variables = new HashMap<>();
 
             PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("SELECT * FROM `questions` WHERE uuid = ?;");
             preparedStatement.setString(1, uuid.toString());
@@ -57,7 +61,13 @@ public class QuestionManager {
                 this.information = resultSet.getString("information");
                 this.flags = resultSet.getInt("flags");
                 this.answer = new Gson().fromJson(resultSet.getString("answer"), QuestionManager.QuestionAnswer.class);
-                this.variables = (Map<String, QuestionVariable>) new Gson().fromJson(resultSet.getString("variables"), variables.getClass());
+                java.lang.reflect.Type type = new TypeToken<Map<String, QuestionVariable>>() {}.getType();
+                this.variables = new Gson().fromJson(resultSet.getString("variables"), type);
+
+                for (Map.Entry<String, QuestionVariable> entry : this.variables.entrySet()) {
+                    System.out.println(QuestionUtil.generateFromQuestionFormat(entry.getValue()));
+                }
+
                 this.creator = UserManager.getUserManager().getUser(UUID.fromString(resultSet.getString("creator_uuid")));
             }
         }
@@ -102,10 +112,10 @@ public class QuestionManager {
     public static class QuestionVariable {
 
         @Expose @Getter private final Type type;
-        private String value;
+        @Getter @Setter private Object value;
         @Expose @Getter @Setter private String unit;
         @Expose @Getter @Setter private String theValue;
-        private String depends;
+        @Getter @Setter private String depends;
 
         public QuestionVariable(Type type) {
             this.type = type;
