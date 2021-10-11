@@ -12,7 +12,8 @@ public class QuestionUtil {
         if (questionVariable.getValue() instanceof String) {
             String[] splitValue = ((String) questionVariable.getValue()).split("\\.");
             if (splitValue[0].equals("random")) {
-                return "Lol";
+                String[] minMax = splitValue[1].split("-");
+                return MathUtil.randomInt(Integer.parseInt(minMax[0]), Integer.parseInt(minMax[1]));
             }
         }
 
