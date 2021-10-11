@@ -98,7 +98,7 @@ public class UserHistoryManager {
 
                     for (Map.Entry<String, QuestionManager.QuestionVariable> entry : this.question.getVariables().entrySet()) {
                         QuestionManager.QuestionVariable var = new QuestionManager.QuestionVariable(entry.getValue().getType());
-                        var.setTheValue((String) QuestionUtil.generateFromQuestionFormat(entry.getValue()));
+                        var.setTheValue(String.valueOf(QuestionUtil.generateFromQuestionFormat(entry.getValue())));
                         var.setUnit(entry.getValue().getUnit());
                         var.setDepends(entry.getValue().getDepends());
                         this.variableValues.put(entry.getKey(), var);
