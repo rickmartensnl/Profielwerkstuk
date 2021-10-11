@@ -101,6 +101,13 @@ public class UserHistoryManager {
                         var.setTheValue(String.valueOf(QuestionUtil.generateFromQuestionFormat(entry.getValue())));
                         var.setUnit(entry.getValue().getUnit());
                         var.setDepends(entry.getValue().getDepends());
+                        if (var == null) {
+                            System.out.println("var is null");
+                        }
+
+                        if (entry.getKey() == null) {
+                            System.out.println("key is null");
+                        }
                         this.variableValues.put(entry.getKey(), var);
                     }
                 }
