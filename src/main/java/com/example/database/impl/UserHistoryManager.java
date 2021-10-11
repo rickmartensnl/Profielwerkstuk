@@ -6,6 +6,7 @@ import com.example.exceptions.DatabaseOfflineException;
 import com.example.utils.QuestionUtil;
 import com.google.gson.*;
 import com.google.gson.annotations.Expose;
+import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -57,7 +58,7 @@ public class UserHistoryManager {
         @Expose @Getter @Setter private String answer;
         @Expose @Getter @Setter private int flags;
         @Expose @Getter @Setter private double correctPercentage;
-        @Expose @Getter @Setter private QuestionManager.QuestionVariable[] variableValues;
+        @Expose @Getter @Setter private Map<String, QuestionManager.QuestionVariable> variableValues;
         @Expose @Getter @Setter private QuestionManager.Question question;
         @Expose @Getter @Setter private UserManager.User user;
 
@@ -73,7 +74,8 @@ public class UserHistoryManager {
                 this.flags = resultSet.getInt("flags");
                 this.correctPercentage = resultSet.getDouble("correctPercentage");
                 this.question = QuestionManager.getQuestionManager().getQuestion(UUID.fromString(resultSet.getString("question_uuid")));
-                this.variableValues = new Gson().fromJson(resultSet.getString("variableValues"), QuestionManager.QuestionVariable[].class);
+                java.lang.reflect.Type type = new TypeToken<Map<String, QuestionManager.QuestionVariable>>() {}.getType();
+                this.variableValues = new Gson().fromJson(resultSet.getString("variables"), type);
                 this.user = UserManager.getUserManager().getUser(UUID.fromString(resultSet.getString("user_uuid")));
             }
         }
@@ -93,6 +95,14 @@ public class UserHistoryManager {
 
                 while (resultSet.next()) {
                     this.question = QuestionManager.getQuestionManager().getQuestion(UUID.fromString(resultSet.getString("uuid")));
+
+                    for (Map.Entry<String, QuestionManager.QuestionVariable> entry : this.question.getVariables().entrySet()) {
+                        QuestionManager.QuestionVariable var = new QuestionManager.QuestionVariable(entry.getValue().getType());
+                        var.setTheValue((String) QuestionUtil.generateFromQuestionFormat(entry.getValue()));
+                        var.setUnit(entry.getValue().getUnit());
+                        var.setDepends(entry.getValue().getDepends());
+                        this.variableValues.put(entry.getKey(), var);
+                    }
                 }
             }
 

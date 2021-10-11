@@ -36,7 +36,6 @@ public class V1SessionController implements UserController {
                 }
 
                 Gson gson = new GsonBuilder()
-                        .serializeNulls()
                         .excludeFieldsWithoutExposeAnnotation()
                         .create();
 

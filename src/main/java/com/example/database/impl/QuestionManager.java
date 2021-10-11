@@ -58,11 +58,6 @@ public class QuestionManager {
                 this.answer = new Gson().fromJson(resultSet.getString("answer"), QuestionManager.QuestionAnswer.class);
                 java.lang.reflect.Type type = new TypeToken<Map<String, QuestionVariable>>() {}.getType();
                 this.variables = new Gson().fromJson(resultSet.getString("variables"), type);
-
-                for (Map.Entry<String, QuestionVariable> entry : this.variables.entrySet()) {
-                    System.out.println(QuestionUtil.generateFromQuestionFormat(entry.getValue()));
-                }
-
                 this.creator = UserManager.getUserManager().getUser(UUID.fromString(resultSet.getString("creator_uuid")));
             }
         }
