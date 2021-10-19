@@ -12,8 +12,27 @@ export class Dyslexia extends React.Component {
         };
 
         this.toggleDyslexia = this.toggleDyslexia.bind(this);
-        let authMiddleware = new AuthMiddleware();
-        console.log(authMiddleware.getUser());
+        this.authMiddleware = new AuthMiddleware();
+    }
+
+    componentDidMount() {
+        this.authMiddleware.isValid().then(res => {
+            if (!res) {
+                this.props.history.push('/login');
+            }
+        });
+
+        this.authMiddleware.getUser().then(user => {
+           if ((user.flags & 0x1) === 0x1) {
+               this.setState(prevState => ({
+                   dyslexia: true
+               }));
+           } else {
+               this.setState(prevState => ({
+                   dyslexia: false
+               }));
+           }
+        });
     }
 
     toggleDyslexia() {

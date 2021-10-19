@@ -29,9 +29,7 @@ export class App extends React.Component {
                     <Route exact path="/subjects/:id/chapters/:id" component={Child} />
 
                     {/* Dyslexia test */}
-                    <Route path="/dyslexia">
-                        <Dyslexia/>
-                    </Route>
+                    <Route path="/dyslexia" component={Dyslexia} />
 
                     <Route path="*">
                         <div>

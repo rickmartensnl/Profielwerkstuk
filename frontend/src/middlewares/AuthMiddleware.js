@@ -1,5 +1,6 @@
 import axios from "axios";
 import { apiRoute } from "../site/App";
+import {Redirect} from "react-router-dom";
 
 export class AuthMiddleware {
 
@@ -8,22 +9,24 @@ export class AuthMiddleware {
     }
 
     isValid() {
-        if (this.getUser() === null) {
-            return false;
-        }
+        return this.getUser().then(res => {
+            return res !== null;
+        });
     }
 
     getUser() {
-        return this.doRequest('/users/@me', "GET").then(res => {
-            return res.data;
-        }).catch(err => {
+        try {
+            return this.doRequest('/users/@me', "GET").then(res => {
+                return res.data;
+            });
+        } catch (e) {
             return null;
-        });
+        }
     }
 
     doRequest($endpoint, $method) {
         if (this.token == null) {
-            return null;
+            return Promise.reject("noTokenSaved.");
         }
 
         let config = {
