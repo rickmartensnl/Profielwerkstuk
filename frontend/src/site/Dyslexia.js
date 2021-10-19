@@ -1,5 +1,6 @@
 import React from 'react';
 import MetaTags from "react-meta-tags";
+import { AuthMiddleware } from "../middlewares/AuthMiddleware";
 
 export class Dyslexia extends React.Component {
 
@@ -11,6 +12,8 @@ export class Dyslexia extends React.Component {
         };
 
         this.toggleDyslexia = this.toggleDyslexia.bind(this);
+        let authMiddleware = new AuthMiddleware();
+        console.log(authMiddleware.getUser());
     }
 
     toggleDyslexia() {

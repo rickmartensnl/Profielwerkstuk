@@ -11,15 +11,20 @@ export class Register extends React.Component {
 
         this.state = {
             email: '',
+            username: '',
             password: '',
+            passwordConfirm: '',
+            terms: false,
             invalidEmail: false,
             isEmptyEmail: false,
-            isEmptyPassword: false
+            isEmptyUsername: false,
+            isEmptyPassword: false,
+            isEmptyPasswordConfirm: false,
+            isNotAcceptedTerms: false
         };
 
         this.handleChange = this.handleChange.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
-        this.handleForgot = this.handleForgot.bind(this);
+        this.handleRegister = this.handleRegister.bind(this);
     }
 
     componentDidMount() {
@@ -51,23 +56,45 @@ export class Register extends React.Component {
         });
     }
 
-    handleLogin(event) {
+    handleRegister(event) {
         event.preventDefault();
         this.setState({
             invalidEmail: false,
             isEmptyEmail: false,
-            isEmptyPassword: false
+            isEmptyUsername: false,
+            isEmptyPassword: false,
+            isEmptyPasswordConfirm: false,
+            isNotAcceptedTerms: false
         })
 
         let emailRegEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         let email = this.state.email;
+        let username = this.state.username;
         let password = this.state.password;
+        let passwordConfirm = this.state.passwordConfirm;
+        let terms = this.state.terms;
+
+        if (username === '') {
+            this.setState({
+                isEmptyUsername: username === ''
+            });
+        }
 
         if (password === '') {
             this.setState({
                 isEmptyPassword: password === ''
             });
         }
+
+        if (passwordConfirm === '') {
+            this.setState({
+                isEmptyPasswordConfirm: passwordConfirm === ''
+            });
+        }
+
+        this.setState({
+            isNotAcceptedTerms: terms
+        })
 
         if (email === '') {
             this.setState({
@@ -77,11 +104,11 @@ export class Register extends React.Component {
         }
 
         if (emailRegEX.test(email)) {
-            if (this.state.isEmptyPassword) {
+            if (this.state.isEmptyUsername || this.state.isEmptyPassword || this.state.isEmptyPasswordConfirm || this.isNotAcceptedTerms) {
                 return;
             }
 
-            axios.post(`${apiRoute()}/auth/login`, {email: email, password: password}).then(result => {
+            axios.post(`${apiRoute()}/auth/register`, {email: email, username: username, password: password, terms: terms}).then(result => {
                 alert('Je gegevens zijn correct. Ik ga je token opslaan.');
             }).catch(error => {
                 alert('Er is iets fout gegaan.');
@@ -108,11 +135,11 @@ export class Register extends React.Component {
                 <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
                     <h1 className="font-bold text-center text-2xl mb-5">Profielwerkstuk</h1>
                     <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
-                        <form onSubmit={this.handleLogin} className="px-5 py-7">
+                        <form onSubmit={this.handleRegister} className="px-5 py-7">
                             <label className={`font-semibold text-sm ${this.state.isEmptyEmail || this.state.invalidEmail ? 'text-red-500' : 'text-gray-600'} pb-1 block`}>Email<span className="italic">{this.state.isEmptyEmail ? ' — This field is required' : ''}{this.state.invalidEmail ? ' — This is not a valid email' : ''}</span></label>
                             <input name="email" type="text" autoComplete="email" value={this.state.email} onChange={this.handleChange} className={`border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full ${this.state.isEmptyEmail || this.state.invalidEmail ? 'border-red-500' : ''}`} />
-                            <label className={`font-semibold text-sm text-gray-600 pb-1 block`}>Username</label>
-                            <input name="username" type="text" autoComplete="username" className={`border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full`} />
+                            <label className={`font-semibold text-sm ${this.state.isEmptyUsername ? 'text-red-500' : 'text-gray-600'} pb-1 block`}>Username<span className="italic">{this.state.isEmptyUsername ? ' — This field is required' : ''}</span></label>
+                            <input name="username" type="text" autoComplete="username" value={this.state.username} onChange={this.handleChange} className={`border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full ${this.state.isEmptyUsername ? 'border-red-500' : ''}`} />
                             <label className={`font-semibold text-sm ${this.state.isEmptyPassword ? 'text-red-500' : 'text-gray-600'} pb-1 block`}>Password<span className="italic">{this.state.isEmptyPassword ? ' — This field is required' : ''}</span></label>
                             <input name="password" type="password" autoComplete="new-password" value={this.state.password} onChange={this.handleChange} className={`border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full ${this.state.isEmptyPassword ? 'border-red-500' : ''}`}/>
                             <label className={`font-semibold text-sm text-gray-600 pb-1 block`}>Verify Password</label>
@@ -142,7 +169,7 @@ export class Register extends React.Component {
                         <div className="py-5">
                             <div className="grid grid-cols-2 gap-1">
                                 <div className="text-center sm:text-left  whitespace-nowrap">
-                                    <Link to="/login" type="button" className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
+                                    <Link to="/login" className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 inline-block align-text-bottom fill-current">
                                             <g>
                                                 <rect fill="none" height="24" width="24"/>
@@ -160,7 +187,7 @@ export class Register extends React.Component {
                     <div className="py-5">
                         <div className="grid grid-cols-2 gap-1">
                             <div className="text-center sm:text-left whitespace-nowrap">
-                                <Link to="/" type="button" className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
+                                <Link to="/" className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
                                     <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24" viewBox="0 0 24 24" className="w-4 h-4 inline-block align-text-top fill-current">
                                         <rect fill="none" height="24" width="24"/><
                                         path d="M9,19l1.41-1.41L5.83,13H22V11H5.83l4.59-4.59L9,5l-7,7L9,19z"/>
