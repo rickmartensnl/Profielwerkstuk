@@ -30,12 +30,14 @@ export class AuthMiddleware {
         }
 
         let config = {
+            method: $method,
+            url: apiRoute() + $endpoint,
             headers: {
                 "Authorization": this.token
             }
         };
 
-        return axios.get(apiRoute() + $endpoint, config).then(result => {
+        return axios.request(config).then(result => {
             return result
         }).catch(error => {
             return Promise.reject(error);
