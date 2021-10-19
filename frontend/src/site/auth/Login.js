@@ -129,18 +129,18 @@ export class Login extends React.Component {
                             </button>
                         </form>
                         <div className="py-5">
-                            <div className="grid grid-cols-2 gap-1">
-                                <div className="text-center sm:text-left whitespace-nowrap">
+                            <div className="flex">
+                                <div className="flex-grow text-center sm:text-left whitespace-nowrap">
                                     <div onClick={this.handleForgot} className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h4 inline-block align-text-top fill-current">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 inline-block align-text-top fill-current">
                                             <path d="M0 0h24v24H0z" fill="none"/>
                                             <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>
                                         </svg>
                                         <span className="inline-block ml-1">Forgot Password</span>
                                     </div>
                                 </div>
-                                <div className="text-center sm:text-right whitespace-nowrap">
-                                    <div onClick={this.handleRegister} className="transition duration-200 mx-5 px-5 py-4 font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
+                                <div className="flex-grow text-center sm:text-right whitespace-nowrap">
+                                    <div onClick={this.handleRegister} className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 inline-block align-text-bottom fill-current">
                                             <path d="M0 0h24v24H0z" fill="none"/>
                                             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>

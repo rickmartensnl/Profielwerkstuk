@@ -23,6 +23,7 @@ export class Register extends React.Component {
             isNotAcceptedTerms: false
         };
 
+        this.handleLogin = this.handleLogin.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleRegister = this.handleRegister.bind(this);
     }
@@ -54,6 +55,11 @@ export class Register extends React.Component {
         this.setState({
             [name]: value
         });
+    }
+
+    handleLogin(event) {
+        event.preventDefault();
+        this.props.history.push('/login');
     }
 
     handleRegister(event) {
@@ -167,9 +173,9 @@ export class Register extends React.Component {
                             </button>
                         </form>
                         <div className="py-5">
-                            <div className="grid grid-cols-2 gap-1">
-                                <div className="text-center sm:text-left  whitespace-nowrap">
-                                    <Link to="/login" className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
+                            <div className="flex">
+                                <div className="flex-grow text-center sm:text-left whitespace-nowrap">
+                                    <div onClick={this.handleLogin} className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 inline-block align-text-bottom fill-current">
                                             <g>
                                                 <rect fill="none" height="24" width="24"/>
@@ -179,14 +185,14 @@ export class Register extends React.Component {
                                             </g>
                                         </svg>
                                         <span className="inline-block ml-1">Already an account?</span>
-                                    </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="py-5">
-                        <div className="grid grid-cols-2 gap-1">
-                            <div className="text-center sm:text-left whitespace-nowrap">
+                        <div className="flex">
+                            <div className="flex-grow text-center sm:text-left whitespace-nowrap">
                                 <Link to="/" className="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
                                     <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24" viewBox="0 0 24 24" className="w-4 h-4 inline-block align-text-top fill-current">
                                         <rect fill="none" height="24" width="24"/><
