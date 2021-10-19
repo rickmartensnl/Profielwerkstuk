@@ -1,6 +1,5 @@
 import axios from "axios";
 import { apiRoute } from "../site/App";
-import {Redirect} from "react-router-dom";
 
 export class AuthMiddleware {
 
