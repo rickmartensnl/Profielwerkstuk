@@ -11,7 +11,6 @@ export class Dyslexia extends React.Component {
             dyslexia: false
         };
 
-        this.toggleDyslexia = this.toggleDyslexia.bind(this);
         this.authMiddleware = new AuthMiddleware();
     }
 
@@ -20,6 +19,8 @@ export class Dyslexia extends React.Component {
             if (!res) {
                 this.props.history.push('/login');
             }
+        }).catch(err => {
+            this.props.history.push('/login');
         });
 
         this.authMiddleware.getUser().then(user => {
@@ -32,13 +33,23 @@ export class Dyslexia extends React.Component {
                    dyslexia: false
                }));
            }
-        });
-    }
 
-    toggleDyslexia() {
-        this.setState(prevState => ({
-            dyslexia: !prevState.dyslexia
-        }));
+           //Dark Mode
+           if ((user.flags & 0x2) === 0x2) {
+               document.documentElement.classList.add('dark');
+           } else if ((user.flags & 0x4) === 0x4) {
+               document.documentElement.classList.remove('dark');
+           } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+               document.documentElement.classList.add('dark');
+               window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
+                   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                       document.documentElement.classList.add('dark')
+                   } else {
+                       document.documentElement.classList.remove('dark')
+                   }
+               });
+           }
+        });
     }
 
     render() {
@@ -51,10 +62,6 @@ export class Dyslexia extends React.Component {
                 <p className={this.state.dyslexia ? 'dyslexia-font' : ''}>
                     Test I am testing very much
                 </p>
-
-                <button onClick={ this.toggleDyslexia }>
-                    Toggle dyslexia
-                </button>
             </div>
         );
     }

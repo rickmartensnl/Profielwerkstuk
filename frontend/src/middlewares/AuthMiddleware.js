@@ -26,7 +26,7 @@ export class AuthMiddleware {
 
     doRequest($endpoint, $method) {
         if (this.token == null) {
-            return Promise.reject("noTokenSaved.");
+            return Promise.reject("noTokenSaved");
         }
 
         let config = {
