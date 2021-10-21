@@ -6,7 +6,9 @@ import com.example.exceptions.DatabaseOfflineException;
 import com.example.exceptions.TokenVerifyException;
 import com.example.utils.AuthenticationUtil;
 import com.example.utils.Controller;
+import com.example.utils.MyHeaders;
 import com.example.utils.UserController;
+import io.activej.http.HttpHeader;
 import io.activej.http.HttpHeaders;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
@@ -14,6 +16,8 @@ import io.sentry.Sentry;
 import io.sentry.protocol.User;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class AuthMiddleware extends Middleware {
@@ -29,20 +33,26 @@ public class AuthMiddleware extends Middleware {
         try {
             UserManager.User myUser = UserManager.getUserManager().getUser(uuid);
 
+            if (myUser == null) {
+                return HttpResponse.ofCode(401).withJson("{\"message\":\"401: Unauthorized\",\"code\":0}");
+            }
+
             if (controller instanceof UserController) {
                 UserController userController = (UserController) controller;
 
                 userController.setUser(myUser);
             }
 
-            System.out.println(httpRequest.getHeaders());
+            Sentry.configureScope(scope -> {
+                User sentryUser = scope.getUser();
+                assert sentryUser != null;
+                sentryUser.setEmail(myUser.getEmail());
+                sentryUser.setId(myUser.getUuid().toString());
+                sentryUser.setUsername(myUser.getUsername());
+                Sentry.setUser(sentryUser);
+            });
 
-            User sentryUser = new User();
-            sentryUser.setEmail(myUser.getEmail());
-            sentryUser.setId(myUser.getUuid().toString());
-            sentryUser.setUsername(myUser.getUsername());
-//            sentryUser.setIpAddress();
-            Sentry.setUser(sentryUser);
+            Sentry.captureException(new Exception());
         } catch (DatabaseOfflineException e) {
             return HttpResponse.ofCode(500).withJson("{\"message\":\"500: Internal Server Error\",\"code\":\"" + Sentry.getLastEventId() + "\"}");
         }

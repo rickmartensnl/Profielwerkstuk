@@ -3,8 +3,12 @@ package com.example.api;
 import com.example.api.v1.auth.V1AuthController;
 import com.example.api.v1.users.V1UsersController;
 import com.example.utils.Controller;
+import com.example.utils.MyHeaders;
+import io.activej.http.HttpHeaders;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
+import io.sentry.Sentry;
+import io.sentry.protocol.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +31,29 @@ public class APIController implements Controller {
 
     @Override
     public @NotNull HttpResponse runRequest(HttpRequest httpRequest) {
+        String ip = httpRequest.getHeader(MyHeaders.DO_CONNECTING_IP);
+        String userAgent = httpRequest.getHeader(HttpHeaders.USER_AGENT);
+
+        Sentry.configureScope(scope -> {
+            if (userAgent != null) {
+                String[] splitedUserAgent = userAgent.split("/");
+                HashMap<String, String> userAgentMap = new HashMap<>();
+                if (splitedUserAgent.length >= 2) {
+                    userAgentMap.put("name", splitedUserAgent[0]);
+                    userAgentMap.put("version", splitedUserAgent[1]);
+                    scope.setContexts("browser", userAgentMap);
+                } else {
+                    userAgentMap.put("name", splitedUserAgent[0]);
+                    scope.setContexts("browser", userAgentMap);
+                }
+            }
+            User sentryUser = new User();
+            if (ip != null) {
+                sentryUser.setIpAddress(ip);
+            }
+            Sentry.setUser(sentryUser);
+        });
+
         String[] path = httpRequest.getRelativePath().toLowerCase().split("/");
         Controller controller = null;
         if (isVersioned(httpRequest)) {
