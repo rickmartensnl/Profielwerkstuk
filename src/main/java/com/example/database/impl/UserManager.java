@@ -11,6 +11,7 @@ import com.example.utils.AuthenticationUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
+import io.sentry.Sentry;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +37,22 @@ public class UserManager {
         userMap = new HashMap<>();
     }
 
+    public User createUser(String username, String email, String password, String locale) throws DatabaseOfflineException, InvalidEmailSyntaxException {
+        if (!AuthenticationUtil.isValidEmail(email)) {
+            throw new InvalidEmailSyntaxException();
+        }
+
+        try {
+            User user = new User(username, email, password, locale);
+            userMap.put(user.getUuid(), user);
+
+            return user;
+        } catch (SQLException exception) {
+            Sentry.captureException(exception);
+            throw new DatabaseOfflineException();
+        }
+    }
+
     public @Nullable User getUser(UUID uuid) throws DatabaseOfflineException {
         return getUser(uuid, false);
     }
@@ -54,13 +71,13 @@ public class UserManager {
 
             return user;
         } catch (SQLException exception) {
+            Sentry.captureException(exception);
             throw new DatabaseOfflineException();
         }
     }
 
     public @Nullable User getUserByEmail(String email) throws InvalidEmailSyntaxException, DatabaseOfflineException {
-        String pattern = "^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))";
-        if (!Pattern.matches(pattern, email)) {
+        if (!AuthenticationUtil.isValidEmail(email)) {
             throw new InvalidEmailSyntaxException();
         }
 
@@ -75,6 +92,7 @@ public class UserManager {
 
             return null;
         } catch (SQLException exception) {
+            Sentry.captureException(exception);
             throw new DatabaseOfflineException();
         }
     }
@@ -92,6 +110,27 @@ public class UserManager {
 
         @Getter @Setter private transient boolean cached;
         private transient Auth auth;
+
+        public User(String username, String email, String password, String locale) throws SQLException {
+            this.uuid = UUID.randomUUID();
+            this.username = username;
+            this.email = email;
+            this.password = AuthenticationUtil.hashPassword(password);
+            this.locale = locale;
+            this.flags = 0;
+            this.public_flags = calculatePublicFlags();
+            this.token_nbf = new Timestamp(System.currentTimeMillis() - 1);
+
+            PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("INSERT INTO `users` (`uuid`, `username`, `email`, `password`, `locale`, `flags`, `token_nbf`) VALUES (?,?,?,?,?,?,?);");
+            preparedStatement.setString(1, this.uuid.toString());
+            preparedStatement.setString(2, this.username);
+            preparedStatement.setString(3, this.email);
+            preparedStatement.setString(4, this.password);
+            preparedStatement.setString(5, this.locale);
+            preparedStatement.setInt(6, this.flags);
+            preparedStatement.setTimestamp(7, this.token_nbf);
+            preparedStatement.executeUpdate();
+        }
 
         public User(UUID uuid) throws SQLException {
             this.uuid = uuid;
@@ -158,6 +197,23 @@ public class UserManager {
             return gson.toJson(this);
         }
 
+        public void save() throws DatabaseOfflineException {
+            try {
+                PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("UPDATE `users` SET `username`=?, `email`=?, `password`=?, `locale`=?, `flags`=?, `token_nbf`=? WHERE `uuid`=?;");
+                preparedStatement.setString(1, this.username);
+                preparedStatement.setString(2, this.email);
+                preparedStatement.setString(3, this.password);
+                preparedStatement.setString(4, this.locale);
+                preparedStatement.setInt(5, this.flags);
+                preparedStatement.setTimestamp(6, this.token_nbf);
+                preparedStatement.setString(7, this.uuid.toString());
+                preparedStatement.executeUpdate();
+            } catch (SQLException exception) {
+                Sentry.captureException(exception);
+                throw new DatabaseOfflineException();
+            }
+        }
+
         public String getAuthObject() throws TokenCreateException {
             this.auth = new Auth(uuid);
 
@@ -179,7 +235,8 @@ public class UserManager {
                         .withIssuedAt(new Date())
                         .withSubject(uuid.toString())
                         .sign(AuthenticationUtil.getAlgorithm());
-            } catch (JWTCreationException exception){
+            } catch (JWTCreationException exception) {
+                Sentry.captureException(exception);
                 throw new TokenCreateException();
             }
         }

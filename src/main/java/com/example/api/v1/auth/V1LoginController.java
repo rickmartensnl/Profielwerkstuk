@@ -11,12 +11,13 @@ import com.google.gson.JsonParser;
 import io.activej.http.HttpMethod;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
+import io.sentry.Sentry;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 
-@AllowMethods({HttpMethod.POST})
+@AllowMethods({ HttpMethod.POST })
 public class V1LoginController implements Controller {
 
     @Override
@@ -38,7 +39,7 @@ public class V1LoginController implements Controller {
         } catch (InvalidEmailSyntaxException exception) {
             return HttpResponse.ofCode(400).withJson("{\"message\":\"400: Bad Request\",\"code\":0}");
         } catch (DatabaseOfflineException | TokenCreateException exception) {
-            return HttpResponse.ofCode(500).withJson("{\"message\":\"" + exception.getClass().getName() + "\"}");
+            return HttpResponse.ofCode(500).withJson("{\"message\":\"500: Internal Server Error\",\"code\":\"" + Sentry.getLastEventId() + "\"}");
         }
     }
 

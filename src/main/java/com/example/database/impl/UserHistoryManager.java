@@ -7,6 +7,7 @@ import com.example.utils.QuestionUtil;
 import com.google.gson.*;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
+import io.sentry.Sentry;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +29,7 @@ public class UserHistoryManager {
         try {
             return new UserHistory(user, null, null, null, UUID.fromString("8630feb6-1bde-11ec-9e40-2e399d554045"));
         } catch (SQLException exception) {
+            Sentry.captureException(exception);
             throw new DatabaseOfflineException();
         }
     }
@@ -47,6 +49,7 @@ public class UserHistoryManager {
 
             return returnable.toArray(new UserHistory[0]);
         } catch (SQLException exception) {
+            Sentry.captureException(exception);
             throw new DatabaseOfflineException();
         }
     }
@@ -112,19 +115,15 @@ public class UserHistoryManager {
                 }
             }
 
-            try {
-                PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("INSERT INTO `users_play_history` (uuid, answer, flags, correctPercentage, variableValues, question_uuid, user_uuid) VALUES (?, ?, ?, ?, ?, ?, ?);");
-                preparedStatement.setString(1, this.uuid.toString());
-                preparedStatement.setString(2, new Gson().toJson(this.answer));
-                preparedStatement.setInt(3, this.flags);
-                preparedStatement.setNull(4, 3);
-                preparedStatement.setString(5, new Gson().toJson(this.variableValues));
-                preparedStatement.setString(6, this.question.getUuid().toString());
-                preparedStatement.setString(7, this.user.getUuid().toString());
-                preparedStatement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("INSERT INTO `users_play_history` (uuid, answer, flags, correctPercentage, variableValues, question_uuid, user_uuid) VALUES (?, ?, ?, ?, ?, ?, ?);");
+            preparedStatement.setString(1, this.uuid.toString());
+            preparedStatement.setString(2, new Gson().toJson(this.answer));
+            preparedStatement.setInt(3, this.flags);
+            preparedStatement.setNull(4, 3);
+            preparedStatement.setString(5, new Gson().toJson(this.variableValues));
+            preparedStatement.setString(6, this.question.getUuid().toString());
+            preparedStatement.setString(7, this.user.getUuid().toString());
+            preparedStatement.executeUpdate();
         }
 
         @Override

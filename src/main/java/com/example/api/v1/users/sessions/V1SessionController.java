@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import io.activej.http.HttpMethod;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
+import io.sentry.Sentry;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -42,8 +43,8 @@ public class V1SessionController implements UserController {
                 return HttpResponse.ok200().withJson(gson.toJson(userHistory));
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
-            return HttpResponse.ofCode(500).withPlainText(String.valueOf(exception));
+            Sentry.captureException(exception);
+            return HttpResponse.ofCode(500).withJson("{\"message\":\"500: Internal Server Error\",\"code\":\"" + Sentry.getLastEventId() + "\"}");
         }
     }
 

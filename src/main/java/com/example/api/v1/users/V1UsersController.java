@@ -3,6 +3,7 @@ package com.example.api.v1.users;
 import com.example.utils.Controller;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
+import io.sentry.Sentry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -49,8 +50,8 @@ public class V1UsersController implements Controller {
                     return res;
                 }
             } catch (Exception exception) {
-                exception.printStackTrace();
-                return HttpResponse.ofCode(500).withJson("{\"message\":\"" + exception.getClass().getName() + "\"}");
+                Sentry.captureException(exception);
+                return HttpResponse.ofCode(500).withJson("{\"message\":\"500: Internal Server Error\",\"code\":\"" + Sentry.getLastEventId() + "\"}");
             }
         }
     }

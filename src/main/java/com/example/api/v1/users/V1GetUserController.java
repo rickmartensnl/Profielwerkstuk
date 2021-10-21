@@ -4,16 +4,20 @@ import com.example.api.v1.users.sessions.V1SessionController;
 import com.example.database.impl.UserManager;
 import com.example.exceptions.DatabaseOfflineException;
 import com.example.middlewares.AuthMiddleware;
+import com.example.utils.AllowMethods;
 import com.example.utils.Controller;
 import com.example.utils.UserController;
+import io.activej.http.HttpMethod;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
+import io.sentry.Sentry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@AllowMethods({ HttpMethod.GET, HttpMethod.PATCH })
 public class V1GetUserController implements Controller {
 
     public final Map<String, Controller> controllers = new HashMap<>();
@@ -82,14 +86,25 @@ public class V1GetUserController implements Controller {
                 }
 
                 if (user.getUuid().equals(authUUID)) {
-                    return HttpResponse.ok200().withJson(user.getJsonObject(true));
+                    switch (httpRequest.getMethod()) {
+                        case GET:
+                            return HttpResponse.ok200().withJson(user.getJsonObject(true));
+                        case PATCH:
+                            return modifyUser(httpRequest, user);
+                    }
                 }
 
                 return HttpResponse.ok200().withJson(user.getJsonObject());
             }
         } catch (DatabaseOfflineException exception) {
-            return HttpResponse.ofCode(500).withJson("{\"message\":\"" + exception.getClass().getName() + "\"}");
+            return HttpResponse.ofCode(500).withJson("{\"message\":\"500: Internal Server Error\",\"code\":\"" + Sentry.getLastEventId() + "\"}");
         }
+    }
+
+
+    public @NotNull HttpResponse modifyUser(HttpRequest httpRequest, UserManager.User user) {
+
+        return notImplemented501();
     }
 
 }

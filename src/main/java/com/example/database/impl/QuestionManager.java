@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
+import io.sentry.Sentry;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +28,8 @@ public class QuestionManager {
     public Question getQuestion(UUID uuid) throws DatabaseOfflineException {
         try {
             return new Question(uuid);
-        } catch (SQLException e) {
+        } catch (SQLException exception) {
+            Sentry.captureException(exception);
             throw new DatabaseOfflineException();
         }
     }

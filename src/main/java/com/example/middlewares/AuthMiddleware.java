@@ -7,6 +7,7 @@ import com.example.utils.Controller;
 import io.activej.http.HttpHeaders;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
+import io.sentry.Sentry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;

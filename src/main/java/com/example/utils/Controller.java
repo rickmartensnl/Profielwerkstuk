@@ -4,6 +4,7 @@ import com.example.api.APIVersion;
 import com.example.middlewares.Middleware;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
+import io.sentry.Sentry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,8 +49,8 @@ public interface Controller {
             try {
                 Middleware middleware = (Middleware) middlewareClass.newInstance();
                 return middleware.handle(httpRequest, controller);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception exception) {
+                Sentry.captureException(exception);
             }
         }
 
