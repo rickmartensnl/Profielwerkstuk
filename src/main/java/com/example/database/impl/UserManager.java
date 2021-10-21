@@ -5,7 +5,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.example.ProfielwerkstukServerLauncher;
 import com.example.database.Model;
 import com.example.exceptions.DatabaseOfflineException;
-import com.example.exceptions.InvalidEmailSyntaxException;
+import com.example.exceptions.InvalidSyntaxException;
 import com.example.exceptions.TokenCreateException;
 import com.example.utils.AuthenticationUtil;
 import com.google.gson.Gson;
@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 public class UserManager {
 
@@ -37,9 +36,9 @@ public class UserManager {
         userMap = new HashMap<>();
     }
 
-    public User createUser(String username, String email, String password, String locale) throws DatabaseOfflineException, InvalidEmailSyntaxException {
+    public User createUser(String username, String email, String password, String locale) throws DatabaseOfflineException, InvalidSyntaxException {
         if (!AuthenticationUtil.isValidEmail(email)) {
-            throw new InvalidEmailSyntaxException();
+            throw new InvalidSyntaxException();
         }
 
         try {
@@ -76,9 +75,9 @@ public class UserManager {
         }
     }
 
-    public @Nullable User getUserByEmail(String email) throws InvalidEmailSyntaxException, DatabaseOfflineException {
+    public @Nullable User getUserByEmail(String email) throws InvalidSyntaxException, DatabaseOfflineException {
         if (!AuthenticationUtil.isValidEmail(email)) {
-            throw new InvalidEmailSyntaxException();
+            throw new InvalidSyntaxException();
         }
 
         try {

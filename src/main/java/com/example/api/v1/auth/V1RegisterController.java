@@ -18,24 +18,20 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.charset.StandardCharsets;
 
 @AllowMethods({ HttpMethod.POST })
-public class V1LoginController implements Controller {
+public class V1RegisterController implements Controller {
 
     @Override
     public @NotNull HttpResponse runRequest(HttpRequest httpRequest) {
-        LoginBody loginBody = new Gson().fromJson(JsonParser.parseString(httpRequest.getBody().getString(StandardCharsets.UTF_8)), LoginBody.class);
+        RegisterBody registerBody = new Gson().fromJson(JsonParser.parseString(httpRequest.getBody().getString(StandardCharsets.UTF_8)), RegisterBody.class);
 
         try {
-            UserManager.User user = UserManager.getUserManager().getUserByEmail(loginBody.getEmail());
-
-            if (user == null) {
-                return HttpResponse.ofCode(401).withJson("{\"message\":\"401: Unauthorized\",\"code\":0}");
+            if (!registerBody.isTerms()) {
+                throw new InvalidSyntaxException();
             }
 
-            if (!user.isValidPassword(loginBody.getPassword())) {
-                return HttpResponse.ofCode(401).withJson("{\"message\":\"401: Unauthorized\",\"code\":0}");
-            }
+            UserManager.User user = UserManager.getUserManager().createUser(registerBody.getUsername(), registerBody.getEmail(), registerBody.getPassword(), "nl");
 
-            return HttpResponse.ok200().withJson(user.getAuthObject());
+            return HttpResponse.ok201().withJson(user.getAuthObject());
         } catch (InvalidSyntaxException exception) {
             return HttpResponse.ofCode(400).withJson("{\"message\":\"400: Bad Request\",\"code\":0}");
         } catch (DatabaseOfflineException | TokenCreateException exception) {
@@ -44,14 +40,18 @@ public class V1LoginController implements Controller {
     }
 
     @Getter
-    private class LoginBody {
+    private class RegisterBody {
 
+        protected final String username;
         protected final String email;
         protected final String password;
+        protected final boolean terms;
 
-        public LoginBody(String email, String password) {
+        public RegisterBody(String username, String email, String password, boolean terms) {
+            this.username = username;
             this.email = email;
             this.password = password;
+            this.terms = terms;
         }
 
     }

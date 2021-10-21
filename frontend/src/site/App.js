@@ -2,10 +2,12 @@ import React from 'react';
 import {
     BrowserRouter as Router,
     Switch,
+    Redirect,
     Route,
     Link
 } from "react-router-dom";
 import { Home } from './Home';
+import { Subjects } from './subjects/Subjects';
 import { Login, Logout, Register } from './auth/Auth';
 import { Dyslexia } from './Dyslexia';
 
@@ -20,9 +22,11 @@ export class App extends React.Component {
                     <Route exact path="/logout" component={Logout} />
                     <Route exact path="/register" component={Register} />
 
-                    <Route exact path="/app" component={Child} />
+                    <Route exact path="/app">
+                        <Redirect to="/subjects" />
+                    </Route>
 
-                    <Route exact path="/subjects" component={Child} />
+                    <Route exact path="/subjects" component={Subjects} />
                     <Route exact path="/subjects/:id" component={Child} />
 
                     <Route exact path="/subjects/:id/chapters" component={Child} />

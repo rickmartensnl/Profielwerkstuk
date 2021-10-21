@@ -110,7 +110,7 @@ export class Register extends React.Component {
         }
 
         this.setState({
-            isNotAcceptedTerms: terms
+            isNotAcceptedTerms: !terms
         })
 
         if (email === '') {
@@ -159,17 +159,17 @@ export class Register extends React.Component {
                             <input name="username" type="text" autoComplete="nickname" value={this.state.username} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.isEmptyUsername ? 'border-red-500' : ''}`} />
                             <label className={`font-semibold text-sm ${this.state.isEmptyPassword ? 'text-red-500' : 'text-gray-600 dark:text-dark-text-primary'} pb-1 block`}>Password<span className="italic">{this.state.isEmptyPassword ? ' — This field is required' : ''}</span></label>
                             <input name="password" type="password" autoComplete="new-password" value={this.state.password} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.isEmptyPassword ? 'border-red-500' : ''}`}/>
-                            <label className={`font-semibold text-sm text-gray-600 dark:text-dark-text-primary pb-1 block`}>Verify Password</label>
-                            <input name="verifyPassword" type="password" autoComplete="new-password" className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary`} />
+                            <label className={`font-semibold text-sm ${this.state.isEmptyPasswordConfirm ? 'text-red-500' : 'text-gray-600 dark:text-dark-text-primary'} pb-1 block`}>Verify Password<span className="italic">{this.state.isEmptyPasswordConfirm ? ' — This field is required' : ''}</span></label>
+                            <input name="passwordConfirm" type="password" autoComplete="new-password" value={this.state.passwordConfirm} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.isEmptyPasswordConfirm ? 'border-red-500' : ''}`} />
                             <label className="inline-flex cursor-pointer mt-1 mb-5">
-                                <input id="customCheckLogin" type="checkbox" className="form-checkbox border rounded-lg px-3 py-2 mt-1 text-sm" />
-                                <span className="ml-2 font-semibold text-sm text-gray-600 dark:text-dark-text-primary block">
+                                <input name="terms" type="checkbox" value={this.state.terms} onChange={this.handleChange} className={`form-checkbox border dark:border-dark-tertiary rounded-lg p-3 mt-1 cursor-pointer text-sm ${this.state.isNotAcceptedTerms ? 'bg-red-500 hover:bg-red-600' : 'hover:bg-gray-100 dark:bg-dark-secondary dark:hover:bg-dark-tertiary'} text-blue-500 hover:text-blue-600 dark:text-dark-secondary dark:hover:text-dark-tertiary`} />
+                                <span className={`ml-2 font-semibold text-sm ${this.state.isNotAcceptedTerms ? 'text-red-500' : 'text-gray-600 dark:text-dark-text-primary'} block`}>
                                     I have read and agree with our&nbsp;
-                                    <Link to="/" className="text-blue-600 hover:underline">
+                                    <Link to="#terms" className="text-blue-600 hover:underline">
                                         Terms of Service
                                     </Link>
                                     &nbsp;and&nbsp;
-                                    <Link to="/" className="text-blue-600 hover:underline">
+                                    <Link to="#privacy" className="text-blue-600 hover:underline">
                                         Privacy Policy
                                     </Link>
                                     .
