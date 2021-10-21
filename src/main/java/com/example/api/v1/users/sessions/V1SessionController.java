@@ -2,6 +2,7 @@ package com.example.api.v1.users.sessions;
 
 import com.example.database.impl.UserHistoryManager;
 import com.example.database.impl.UserManager;
+import com.example.exceptions.DatabaseOfflineException;
 import com.example.middlewares.AuthMiddleware;
 import com.example.utils.AllowMethods;
 import com.example.utils.UseMiddleware;
@@ -42,8 +43,7 @@ public class V1SessionController implements UserController {
 
                 return HttpResponse.ok200().withJson(gson.toJson(userHistory));
             }
-        } catch (Exception exception) {
-            Sentry.captureException(exception);
+        } catch (DatabaseOfflineException exception) {
             return HttpResponse.ofCode(500).withJson("{\"message\":\"500: Internal Server Error\",\"code\":\"" + Sentry.getLastEventId() + "\"}");
         }
     }

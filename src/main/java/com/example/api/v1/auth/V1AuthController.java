@@ -14,6 +14,7 @@ public class V1AuthController implements Controller {
 
     public V1AuthController() {
         controllers.put("login", new V1LoginController());
+        controllers.put("register", new V1RegisterController());
     }
 
     @Override

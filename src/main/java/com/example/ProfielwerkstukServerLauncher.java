@@ -69,13 +69,11 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
     }
 
     public static void main(String[] args) throws Exception {
-        ProfielwerkstukServerLauncher launcher = new ProfielwerkstukServerLauncher();
-        launcher.launch(args);
         Sentry.init(options -> {
             options.setDsn("https://8455e9fa8bb94920ba771d7927ca7071@o363883.ingest.sentry.io/6020674");
-            options.setTracesSampleRate(1.0);
-            options.setDebug(true);
         });
+        ProfielwerkstukServerLauncher launcher = new ProfielwerkstukServerLauncher();
+        launcher.launch(args);
     }
 
 }

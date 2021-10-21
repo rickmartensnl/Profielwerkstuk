@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.example.ProfielwerkstukServerLauncher;
 import com.example.database.Model;
 import com.example.exceptions.DatabaseOfflineException;
+import com.example.exceptions.DuplicateEmailException;
 import com.example.exceptions.InvalidSyntaxException;
 import com.example.exceptions.TokenCreateException;
 import com.example.utils.AuthenticationUtil;
@@ -36,9 +37,13 @@ public class UserManager {
         userMap = new HashMap<>();
     }
 
-    public User createUser(String username, String email, String password, String locale) throws DatabaseOfflineException, InvalidSyntaxException {
+    public User createUser(String username, String email, String password, String locale) throws DatabaseOfflineException, InvalidSyntaxException, DuplicateEmailException {
         if (!AuthenticationUtil.isValidEmail(email)) {
             throw new InvalidSyntaxException();
+        }
+
+        if (getUserByEmail(email) != null) {
+            throw new DuplicateEmailException();
         }
 
         try {

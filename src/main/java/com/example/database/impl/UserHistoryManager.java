@@ -110,7 +110,7 @@ public class UserHistoryManager {
                         if (entry.getKey() == null) {
                             System.out.println("key is null");
                         }
-                        this.variableValues.put(entry.getKey(), var);
+//                        this.variableValues.put(entry.getKey(), var);
                     }
                 }
             }

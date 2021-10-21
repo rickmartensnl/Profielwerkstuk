@@ -65,12 +65,6 @@ public class V1GetUserController implements Controller {
                     return methodNotAllowed405();
                 }
 
-                if (controller instanceof UserController) {
-                    UserController userController = (UserController) controller;
-
-                    userController.setUser(user);
-                }
-
                 HttpResponse res = callMiddleware(httpRequest, controller);
 
                 if (res == null) {

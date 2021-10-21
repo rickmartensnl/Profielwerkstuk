@@ -2,6 +2,7 @@ package com.example.api.v1.auth;
 
 import com.example.database.impl.UserManager;
 import com.example.exceptions.DatabaseOfflineException;
+import com.example.exceptions.DuplicateEmailException;
 import com.example.exceptions.InvalidSyntaxException;
 import com.example.exceptions.TokenCreateException;
 import com.example.utils.AllowMethods;
@@ -32,7 +33,7 @@ public class V1RegisterController implements Controller {
             UserManager.User user = UserManager.getUserManager().createUser(registerBody.getUsername(), registerBody.getEmail(), registerBody.getPassword(), "nl");
 
             return HttpResponse.ok201().withJson(user.getAuthObject());
-        } catch (InvalidSyntaxException exception) {
+        } catch (DuplicateEmailException | InvalidSyntaxException exception) {
             return HttpResponse.ofCode(400).withJson("{\"message\":\"400: Bad Request\",\"code\":0}");
         } catch (DatabaseOfflineException | TokenCreateException exception) {
             return HttpResponse.ofCode(500).withJson("{\"message\":\"500: Internal Server Error\",\"code\":\"" + Sentry.getLastEventId() + "\"}");

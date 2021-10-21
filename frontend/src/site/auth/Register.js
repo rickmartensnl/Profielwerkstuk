@@ -20,6 +20,7 @@ export class Register extends React.Component {
             isEmptyUsername: false,
             isEmptyPassword: false,
             isEmptyPasswordConfirm: false,
+            isNotMatchingPasswords: false,
             isNotAcceptedTerms: false
         };
 
@@ -81,6 +82,7 @@ export class Register extends React.Component {
             isEmptyUsername: false,
             isEmptyPassword: false,
             isEmptyPasswordConfirm: false,
+            isNotMatchingPasswords: false,
             isNotAcceptedTerms: false
         })
 
@@ -109,6 +111,12 @@ export class Register extends React.Component {
             });
         }
 
+        if (password !== passwordConfirm) {
+            this.setState({
+                isNotMatchingPasswords: true
+            })
+        }
+
         this.setState({
             isNotAcceptedTerms: !terms
         })
@@ -121,7 +129,7 @@ export class Register extends React.Component {
         }
 
         if (emailRegEX.test(email)) {
-            if (this.state.isEmptyUsername || this.state.isEmptyPassword || this.state.isEmptyPasswordConfirm || this.isNotAcceptedTerms) {
+            if (this.state.isEmptyUsername || this.state.isEmptyPassword || this.state.isEmptyPasswordConfirm || this.state.isNotMatchingPasswords || this.state.isNotAcceptedTerms) {
                 return;
             }
 
@@ -159,8 +167,8 @@ export class Register extends React.Component {
                             <input name="username" type="text" autoComplete="nickname" value={this.state.username} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.isEmptyUsername ? 'border-red-500' : ''}`} />
                             <label className={`font-semibold text-sm ${this.state.isEmptyPassword ? 'text-red-500' : 'text-gray-600 dark:text-dark-text-primary'} pb-1 block`}>Password<span className="italic">{this.state.isEmptyPassword ? ' — This field is required' : ''}</span></label>
                             <input name="password" type="password" autoComplete="new-password" value={this.state.password} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.isEmptyPassword ? 'border-red-500' : ''}`}/>
-                            <label className={`font-semibold text-sm ${this.state.isEmptyPasswordConfirm ? 'text-red-500' : 'text-gray-600 dark:text-dark-text-primary'} pb-1 block`}>Verify Password<span className="italic">{this.state.isEmptyPasswordConfirm ? ' — This field is required' : ''}</span></label>
-                            <input name="passwordConfirm" type="password" autoComplete="new-password" value={this.state.passwordConfirm} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.isEmptyPasswordConfirm ? 'border-red-500' : ''}`} />
+                            <label className={`font-semibold text-sm ${this.state.isEmptyPasswordConfirm || this.state.isNotMatchingPasswords ? 'text-red-500' : 'text-gray-600 dark:text-dark-text-primary'} pb-1 block`}>Verify Password<span className="italic">{this.state.isEmptyPasswordConfirm ? ' — This field is required' : this.state.isNotMatchingPasswords ? ' — Passwords do not match' : ''}</span></label>
+                            <input name="passwordConfirm" type="password" autoComplete="new-password" value={this.state.passwordConfirm} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.isEmptyPasswordConfirm || this.state.isNotMatchingPasswords ? 'border-red-500' : ''}`} />
                             <label className="inline-flex cursor-pointer mt-1 mb-5">
                                 <input name="terms" type="checkbox" value={this.state.terms} onChange={this.handleChange} className={`form-checkbox border dark:border-dark-tertiary rounded-lg p-3 mt-1 cursor-pointer text-sm ${this.state.isNotAcceptedTerms ? 'bg-red-500 hover:bg-red-600' : 'hover:bg-gray-100 dark:bg-dark-secondary dark:hover:bg-dark-tertiary'} text-blue-500 hover:text-blue-600 dark:text-dark-secondary dark:hover:text-dark-tertiary`} />
                                 <span className={`ml-2 font-semibold text-sm ${this.state.isNotAcceptedTerms ? 'text-red-500' : 'text-gray-600 dark:text-dark-text-primary'} block`}>
