@@ -35,7 +35,7 @@ public class AuthMiddleware extends Middleware {
                 userController.setUser(myUser);
             }
 
-            System.out.println(httpRequest.getRemoteAddress().getHostAddress());
+            System.out.println(httpRequest.getHeaders());
 
             User sentryUser = new User();
             sentryUser.setEmail(myUser.getEmail());
