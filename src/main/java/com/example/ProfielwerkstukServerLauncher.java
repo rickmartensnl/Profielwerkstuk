@@ -38,7 +38,7 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
         String databaseUsername = System.getenv("DB_USERNAME");
         String databaseName = System.getenv("DB_NAME");
 
-        connection = DriverManager.getConnection(String.format("jdbc:mysql://%s/%s", databaseIp, databaseName), databaseUsername, databasePassword);
+        connection = DriverManager.getConnection(String.format("jdbc:mysql://%s/%s?autoReconnect=true", databaseIp, databaseName), databaseUsername, databasePassword);
     }
 
     @Provides
