@@ -27,18 +27,24 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
 
     public static Connection getConnection() throws SQLException {
         if (connection.isClosed()) {
-            startConnection();
+            Sentry.captureMessage("Conn closed.");
+            return startConnection();
         }
+        Sentry.captureMessage("Conn not closed.");
         return connection;
     }
 
-    public static void startConnection() throws SQLException {
+    public static Connection startConnection() throws SQLException {
         String databaseIp = System.getenv("DB_IP");
         String databasePassword = System.getenv("DB_PASSWORD");
         String databaseUsername = System.getenv("DB_USERNAME");
         String databaseName = System.getenv("DB_NAME");
+        String formattedConnString = String.format("jdbc:mysql://%s/%s?autoReconnect=true&autoReconnectForPools=true&interactiveClient=true&characterEncoding=UTF-8", databaseIp, databaseName);
 
-        connection = DriverManager.getConnection(String.format("jdbc:mysql://%s/%s?autoReconnect=true", databaseIp, databaseName), databaseUsername, databasePassword);
+        Sentry.captureMessage(formattedConnString);
+
+        connection = DriverManager.getConnection(formattedConnString, databaseUsername, databasePassword);
+        return connection;
     }
 
     @Provides
