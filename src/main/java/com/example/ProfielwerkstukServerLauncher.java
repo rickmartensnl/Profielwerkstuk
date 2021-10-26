@@ -72,7 +72,7 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
         @Override
         public void run() {
             try {
-                PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM users");
+                PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT uuid FROM users WHERE uuid=1");
                 preparedStatement.executeQuery();
             } catch (SQLException exception) {
                 exception.printStackTrace();
