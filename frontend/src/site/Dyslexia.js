@@ -24,31 +24,31 @@ export class Dyslexia extends React.Component {
         });
 
         this.authMiddleware.getUser().then(user => {
-           if ((user.flags & 0x1) === 0x1) {
-               this.setState(prevState => ({
-                   dyslexia: true
-               }));
-           } else {
-               this.setState(prevState => ({
-                   dyslexia: false
-               }));
-           }
+            if ((user.flags & 0x1) === 0x1) {
+                this.setState(prevState => ({
+                    dyslexia: true
+                }));
+            } else {
+                this.setState(prevState => ({
+                    dyslexia: false
+                }));
+            }
 
-           //Dark Mode
-           if ((user.flags & 0x2) === 0x2) {
-               document.documentElement.classList.add('dark');
-           } else if ((user.flags & 0x4) === 0x4) {
-               document.documentElement.classList.remove('dark');
-           } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-               document.documentElement.classList.add('dark');
-               window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
-                   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                       document.documentElement.classList.add('dark')
-                   } else {
-                       document.documentElement.classList.remove('dark')
-                   }
-               });
-           }
+            //Dark Mode
+            if ((user.flags & 0x2) === 0x2) {
+                document.documentElement.classList.add('dark');
+            } else if ((user.flags & 0x4) === 0x4) {
+                document.documentElement.classList.remove('dark');
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+                window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
+                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        document.documentElement.classList.add('dark')
+                    } else {
+                        document.documentElement.classList.remove('dark')
+                    }
+                });
+            }
         });
     }
 
