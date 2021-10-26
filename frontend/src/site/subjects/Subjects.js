@@ -2,6 +2,8 @@ import React from "react";
 import MetaTags from "react-meta-tags";
 import { AuthMiddleware } from "../../middlewares/AuthMiddleware";
 import { SubjectsChild } from './SubjectsChild';
+import {apiRoute} from "../App";
+import axios from "axios";
 export * from './SubjectsChild';
 
 export class Subjects extends React.Component {
@@ -11,38 +13,7 @@ export class Subjects extends React.Component {
 
         this.state = {
             dyslexia: false,
-            subjects: [
-                {
-                    "uuid": "uuid",
-                    "name": "Wiskunde B",
-                    "flags": 1,
-                    "creator": {
-                        "uuid": "ed244d8c-1c87-11ec-9621-0242ac130002",
-                        "username": "test",
-                        "public_flags": 8
-                    }
-                },
-                {
-                    "uuid": "uuid1",
-                    "name": "Natuurkunde",
-                    "flags": 1,
-                    "creator": {
-                        "uuid": "ed244d8c-1c87-11ec-9621-0242ac130002",
-                        "username": "test",
-                        "public_flags": 8
-                    }
-                },
-                {
-                    "uuid": "uuid2",
-                    "name": "Scheikunde",
-                    "flags": 0,
-                    "creator": {
-                        "uuid": "ed244d8c-1c87-11ec-9621-0242ac130002",
-                        "username": "test",
-                        "public_flags": 8
-                    }
-                }
-            ]
+            subjects: []
         };
 
         this.authMiddleware = new AuthMiddleware();
@@ -55,6 +26,13 @@ export class Subjects extends React.Component {
             }
         }).catch(err => {
             this.props.history.push('/login');
+        });
+
+
+        axios.get(apiRoute() + '/subjects').then(res => {
+            this.setState({
+                subjects: res.data
+            });
         });
 
         this.authMiddleware.getUser().then(user => {
@@ -109,7 +87,7 @@ export class Subjects extends React.Component {
                             subject: subject
                         }
 
-                        return(<SubjectsChild data={data} key={subject.uuid} />);
+                        return(<SubjectsChild data={data} key={subject.uuid.toString()} />);
                     })}
                 </div>
             </div>
