@@ -15,7 +15,10 @@ import io.sentry.Sentry;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executor;
 
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
@@ -27,10 +30,8 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
 
     public static Connection getConnection() throws SQLException {
         if (connection.isClosed()) {
-            Sentry.captureMessage("Conn closed.");
             return startConnection();
         }
-        Sentry.captureMessage("Conn not closed.");
         return connection;
     }
 
@@ -40,8 +41,6 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
         String databaseUsername = System.getenv("DB_USERNAME");
         String databaseName = System.getenv("DB_NAME");
         String formattedConnString = String.format("jdbc:mysql://%s/%s?autoReconnect=true&autoReconnectForPools=true&interactiveClient=true&characterEncoding=UTF-8", databaseIp, databaseName);
-
-        Sentry.captureMessage(formattedConnString);
 
         connection = DriverManager.getConnection(formattedConnString, databaseUsername, databasePassword);
         return connection;
@@ -55,6 +54,10 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
     public ProfielwerkstukServerLauncher() {
         try {
             startConnection();
+
+            Timer timer = new Timer();
+            timer.schedule(new DatabaseKeepAliveTask(), 60000);
+
             new UserManager();
             new UserHistoryManager();
             new QuestionManager();
@@ -63,6 +66,18 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
         }
 
         apiController = new APIController();
+    }
+
+    private static class DatabaseKeepAliveTask extends TimerTask {
+        @Override
+        public void run() {
+            try {
+                PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM users");
+                preparedStatement.executeQuery();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+        }
     }
 
     @Provides
