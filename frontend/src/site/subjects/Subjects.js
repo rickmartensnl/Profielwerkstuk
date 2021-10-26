@@ -1,6 +1,8 @@
 import React from "react";
 import MetaTags from "react-meta-tags";
 import { AuthMiddleware } from "../../middlewares/AuthMiddleware";
+import { SubjectsChild } from './SubjectsChild';
+export * from './SubjectsChild';
 
 export class Subjects extends React.Component {
 
@@ -8,7 +10,19 @@ export class Subjects extends React.Component {
         super(props);
 
         this.state = {
-            dyslexia: false
+            dyslexia: false,
+            subjects: [
+                {
+                    "uuid": "uuid",
+                    "name": "Wiskunde B",
+                    "flags": 1,
+                    "creator": {
+                        "uuid": "ed244d8c-1c87-11ec-9621-0242ac130002",
+                        "username": "test",
+                        "public_flags": 8
+                    }
+                }
+            ]
         };
 
         this.authMiddleware = new AuthMiddleware();
@@ -53,8 +67,10 @@ export class Subjects extends React.Component {
     }
 
     render() {
+        let subjectChilds = this.state.subjects;
+
         return(
-            <div>
+            <div className="container mx-auto">
                 <MetaTags>
                     <title>Profielwerkstuk — Subjects</title>
                     <meta name="description" content="Select a subject to start learning from." />
@@ -65,6 +81,17 @@ export class Subjects extends React.Component {
                 <h2 className={`text-center text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
                     Selecteer een hoofdstuk om te beginnen met oefenen.
                 </h2>
+                <div className="mt-10 grid justify-items-center gap-4">
+                    {subjectChilds.map(subject => {
+                        const data = {
+                            authMiddleware: this.authMiddleware,
+                            dyslexia: this.state.dyslexia,
+                            subject: subject
+                        }
+
+                        return(<SubjectsChild data={data} />);
+                    })}
+                </div>
             </div>
         );
     }
