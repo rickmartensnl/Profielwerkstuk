@@ -21,6 +21,26 @@ export class Subjects extends React.Component {
                         "username": "test",
                         "public_flags": 8
                     }
+                },
+                {
+                    "uuid": "uuid1",
+                    "name": "Natuurkunde",
+                    "flags": 1,
+                    "creator": {
+                        "uuid": "ed244d8c-1c87-11ec-9621-0242ac130002",
+                        "username": "test",
+                        "public_flags": 8
+                    }
+                },
+                {
+                    "uuid": "uuid2",
+                    "name": "Scheikunde",
+                    "flags": 0,
+                    "creator": {
+                        "uuid": "ed244d8c-1c87-11ec-9621-0242ac130002",
+                        "username": "test",
+                        "public_flags": 8
+                    }
                 }
             ]
         };
@@ -81,7 +101,7 @@ export class Subjects extends React.Component {
                 <h2 className={`text-center text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
                     Selecteer een hoofdstuk om te beginnen met oefenen.
                 </h2>
-                <div className="mt-10 grid justify-items-center gap-4">
+                <div className="mt-10 grid justify-items-center gap-4 mx-4">
                     {subjectChilds.map(subject => {
                         const data = {
                             authMiddleware: this.authMiddleware,
@@ -89,7 +109,7 @@ export class Subjects extends React.Component {
                             subject: subject
                         }
 
-                        return(<SubjectsChild data={data} />);
+                        return(<SubjectsChild data={data} key={subject.uuid} />);
                     })}
                 </div>
             </div>
