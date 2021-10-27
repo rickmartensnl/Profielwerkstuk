@@ -1,5 +1,6 @@
 package com.example.database.impl;
 
+import com.example.ProfielwerkstukServerLauncher;
 import com.example.database.Model;
 import com.example.exceptions.DatabaseOfflineException;
 import com.google.gson.Gson;
@@ -8,6 +9,8 @@ import com.google.gson.annotations.Expose;
 import io.sentry.Sentry;
 import lombok.Getter;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -32,10 +35,19 @@ public class SubjectManager {
     public ArrayList<Subject> getAllSubjects() throws DatabaseOfflineException {
         ArrayList<Subject> subjects = new ArrayList<>();
 
-        subjects.add(getSubject(UUID.fromString("ed244d8c-1c87-11ec-9621-0242ac130002")));
-        subjects.add(getSubject(UUID.fromString("ed244d8c-1c87-11ec-9621-5552ac130002")));
-        subjects.add(getSubject(UUID.fromString("ed244d8c-1c87-11ec-9621-8882ac130002")));
-        subjects.add(getSubject(UUID.fromString("ed244d8c-1c87-11ec-9621-2222ac130002")));
+        try {
+            PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("SELECT `uuid` FROM `subjects`;");
+            preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                subjects.add(new Subject(UUID.fromString(resultSet.getString("uuid"))));
+            }
+
+        } catch (SQLException exception) {
+            Sentry.captureException(exception);
+            throw new DatabaseOfflineException();
+        }
 
         return subjects;
     }
@@ -49,9 +61,16 @@ public class SubjectManager {
 
         public Subject(UUID uuid) throws SQLException, DatabaseOfflineException {
             this.uuid = uuid;
-            this.name = "Wiskunde B";
-            this.flags = 1;
-            this.creator = UserManager.getUserManager().getUser(UUID.fromString("ed244d8c-1c87-11ec-9621-0242ac130002"));
+
+            PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("SELECT * FROM `subjects` WHERE uuid = ?;");
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                this.name = resultSet.getString("name");
+                this.flags = resultSet.getInt("flags");
+                this.creator = UserManager.getUserManager().getUser(UUID.fromString(resultSet.getString("creator_uuid")));
+            }
         }
 
         @Override

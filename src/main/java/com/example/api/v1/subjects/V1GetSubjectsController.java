@@ -29,7 +29,7 @@ public class V1GetSubjectsController implements Controller {
     public V1GetSubjectsController(@Nullable String uuid, HttpRequest httpRequest) {
         controllers.put("sessions", new V1SessionController());
 
-        if (!uuid.equalsIgnoreCase("")) {
+        if (uuid != null && !uuid.equalsIgnoreCase("")) {
             this.uuid = UUID.fromString(uuid.replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5"));
         }
     }
