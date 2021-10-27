@@ -8,4 +8,8 @@ public class MathUtil {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
+    public static int randomInt(int bound) {
+        return ThreadLocalRandom.current().nextInt(bound);
+    }
+
 }

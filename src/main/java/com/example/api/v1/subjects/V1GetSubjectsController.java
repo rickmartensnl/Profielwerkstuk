@@ -2,9 +2,7 @@ package com.example.api.v1.subjects;
 
 import com.example.api.v1.users.sessions.V1SessionController;
 import com.example.database.impl.SubjectManager;
-import com.example.database.impl.UserManager;
 import com.example.exceptions.DatabaseOfflineException;
-import com.example.middlewares.AuthMiddleware;
 import com.example.utils.AllowMethods;
 import com.example.utils.Controller;
 import com.google.gson.Gson;

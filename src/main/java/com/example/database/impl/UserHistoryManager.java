@@ -4,7 +4,8 @@ import com.example.ProfielwerkstukServerLauncher;
 import com.example.database.Model;
 import com.example.exceptions.DatabaseOfflineException;
 import com.example.utils.QuestionUtil;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
 import io.sentry.Sentry;
@@ -87,7 +88,7 @@ public class UserHistoryManager {
             this.answer = null;
             this.flags = 1;
             this.correctPercentage = -1D;
-            this.variableValues = null;
+            this.variableValues = new HashMap<>();
             this.user = user;
 
             if (questionId != null) {
@@ -103,14 +104,7 @@ public class UserHistoryManager {
                         var.setTheValue(String.valueOf(QuestionUtil.generateFromQuestionFormat(entry.getValue())));
                         var.setUnit(entry.getValue().getUnit());
                         var.setDepends(entry.getValue().getDepends());
-                        if (var == null) {
-                            System.out.println("var is null");
-                        }
-
-                        if (entry.getKey() == null) {
-                            System.out.println("key is null");
-                        }
-//                        this.variableValues.put(entry.getKey(), var);
+                        this.variableValues.put(entry.getKey(), var);
                     }
                 }
             }

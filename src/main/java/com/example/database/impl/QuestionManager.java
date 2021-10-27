@@ -90,6 +90,7 @@ public class QuestionManager {
 
     public enum Type {
 
+        STRING(String.class),
         INT(Integer.class);
 
         @Getter private final Class clazz;
