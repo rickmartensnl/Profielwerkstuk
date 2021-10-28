@@ -58,6 +58,7 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
 
             new UserManager();
             new UserHistoryManager();
+            new ParagraphManager();
             new SubjectManager();
             new ChapterManager();
             new QuestionManager();
