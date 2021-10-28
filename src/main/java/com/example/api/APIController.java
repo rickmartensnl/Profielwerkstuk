@@ -1,6 +1,7 @@
 package com.example.api;
 
 import com.example.api.v1.auth.V1AuthController;
+import com.example.api.v1.chapters.V1ChaptersController;
 import com.example.api.v1.subjects.V1SubjectsController;
 import com.example.api.v1.users.V1UsersController;
 import com.example.utils.Controller;
@@ -24,6 +25,10 @@ public class APIController implements Controller {
         HashMap<APIVersion, Controller> innerMapAuth = new HashMap<>();
         innerMapAuth.put(APIVersion.V1, new V1AuthController());
         groups.put("auth", innerMapAuth);
+
+        HashMap<APIVersion, Controller> innerMapChapters = new HashMap<>();
+        innerMapChapters.put(APIVersion.V1, new V1ChaptersController());
+        groups.put("chapters", innerMapChapters);
 
         HashMap<APIVersion, Controller> innerMapSubjects = new HashMap<>();
         innerMapSubjects.put(APIVersion.V1, new V1SubjectsController());

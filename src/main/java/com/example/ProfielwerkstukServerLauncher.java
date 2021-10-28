@@ -1,10 +1,7 @@
 package com.example;
 
 import com.example.api.APIController;
-import com.example.database.impl.QuestionManager;
-import com.example.database.impl.SubjectManager;
-import com.example.database.impl.UserHistoryManager;
-import com.example.database.impl.UserManager;
+import com.example.database.impl.*;
 import io.activej.http.AsyncServlet;
 import io.activej.http.RoutingServlet;
 import io.activej.http.StaticServlet;
@@ -62,6 +59,7 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
             new UserManager();
             new UserHistoryManager();
             new SubjectManager();
+            new ChapterManager();
             new QuestionManager();
         } catch (SQLException exception) {
             Sentry.captureException(exception);

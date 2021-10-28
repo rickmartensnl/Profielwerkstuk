@@ -1,8 +1,6 @@
-package com.example.api.v1.subjects;
+package com.example.api.v1.subjects.chapters;
 
-import com.example.api.v1.subjects.chapters.V1ChaptersController;
-import com.example.api.v1.users.sessions.V1SessionController;
-import com.example.database.impl.SubjectManager;
+import com.example.database.impl.ChapterManager;
 import com.example.exceptions.DatabaseOfflineException;
 import com.example.utils.AllowMethods;
 import com.example.utils.Controller;
@@ -20,14 +18,12 @@ import java.util.Map;
 import java.util.UUID;
 
 @AllowMethods({ HttpMethod.GET })
-public class V1GetSubjectsController implements Controller {
+public class V1GetChaptersController implements Controller {
 
     public final Map<String, Controller> controllers = new HashMap<>();
     private UUID uuid;
 
-    public V1GetSubjectsController(@Nullable String uuid, HttpRequest httpRequest) {
-        controllers.put("chapters", new V1ChaptersController());
-
+    public V1GetChaptersController(@Nullable String uuid, HttpRequest httpRequest) {
         if (uuid != null && !uuid.equalsIgnoreCase("")) {
             this.uuid = UUID.fromString(uuid.replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5"));
         }
@@ -36,21 +32,30 @@ public class V1GetSubjectsController implements Controller {
     @Override
     public @NotNull HttpResponse runRequest(HttpRequest httpRequest) {
         try {
+            String[] path = httpRequest.getRelativePath().toLowerCase().split("/");
+
             if (uuid == null) {
                 Gson gson = new GsonBuilder()
                         .serializeNulls()
                         .excludeFieldsWithoutExposeAnnotation()
                         .create();
-                return HttpResponse.ok200().withJson(gson.toJson(SubjectManager.getSubjectManager().getAllSubjects()));
+
+                String controllerName;
+                if (isVersioned(httpRequest)) {
+                    controllerName = path[2];
+                } else {
+                    controllerName = path[1];
+                }
+
+                return HttpResponse.ok200().withJson(gson.toJson(ChapterManager.getChapterManager().getAllChaptersBySubject(UUID.fromString(controllerName.replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5")))));
             }
 
-            SubjectManager.Subject subject = SubjectManager.getSubjectManager().getSubject(uuid);
+            ChapterManager.Chapter chapter = ChapterManager.getChapterManager().getChapter(uuid);
 
-            if (subject == null) {
-                return HttpResponse.notFound404().withJson("{\"message\":\"404: Not Found\",\"code\":\"subject not found\"}");
+            if (chapter == null) {
+                return HttpResponse.notFound404().withJson("{\"message\":\"404: Not Found\",\"code\":\"chapter not found\"}");
             }
 
-            String[] path = httpRequest.getRelativePath().toLowerCase().split("/");
             String controllerName;
             if (isVersioned(httpRequest)) {
                 controllerName = path.length >= 4 ? path[3] : null;
@@ -73,7 +78,7 @@ public class V1GetSubjectsController implements Controller {
                     return res;
                 }
             } else {
-                return HttpResponse.ok200().withJson(subject.getJsonObject());
+                return HttpResponse.ok200().withJson(chapter.getJsonObject());
             }
         } catch (DatabaseOfflineException exception) {
             return HttpResponse.ofCode(500).withJson("{\"message\":\"500: Internal Server Error\",\"code\":\"" + Sentry.getLastEventId() + "\"}");
