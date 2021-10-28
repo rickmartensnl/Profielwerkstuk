@@ -43,7 +43,6 @@ public class SubjectManager {
             while (resultSet.next()) {
                 subjects.add(new Subject(UUID.fromString(resultSet.getString("uuid"))));
             }
-
         } catch (SQLException exception) {
             Sentry.captureException(exception);
             throw new DatabaseOfflineException();
