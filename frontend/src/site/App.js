@@ -8,7 +8,9 @@ import {
 } from "react-router-dom";
 import { Home } from './Home';
 import { Subjects } from './subjects/Subjects';
+import { Paragraphs } from "./paragraphs/Paragraphs";
 import { Chapters } from './chapters/Chapters';
+import { Play } from './play/Play';
 import { Login, Logout, Register } from './auth/Auth';
 import { Dyslexia } from './Dyslexia';
 
@@ -28,10 +30,9 @@ export class App extends React.Component {
                     </Route>
 
                     <Route exact path="/subjects" component={Subjects} />
-                    <Route exact path="/subjects/:id" component={Chapters} />
-
-                    <Route exact path="/subjects/:id/chapters" component={Child} />
-                    <Route exact path="/subjects/:id/chapters/:id" component={Child} />
+                    <Route exact path="/subjects/:subjectUuid" component={Chapters} />
+                    <Route exact path="/subjects/:subjectUuid/:chapterUuid" component={Paragraphs} />
+                    <Route exact path="/subjects/:subjectUuid/:chapterUuid/:paragraphUuid/play" component={Play} />
 
                     {/* Dyslexia test */}
                     <Route path="/dyslexia" component={Dyslexia} />
@@ -58,13 +59,13 @@ export class Child extends React.Component {
         super(props);
 
         this.state = {
-            id: this.props.match.params.id
+            paragraphUuid: this.props.match.params.paragraphUuid
         };
     }
 
     render() {
         return (
-            <p>ID: {this.state.id}</p>
+            <p>ID: {this.state.paragraphUuid}, Je zal verder gaan met dit leren als ik ready to go ben.</p>
         );
     }
 

@@ -1,12 +1,12 @@
 import React from "react";
 import MetaTags from "react-meta-tags";
 import { AuthMiddleware } from "../../middlewares/AuthMiddleware";
-import { ChaptersChild } from './ChaptersChild';
+import { ParagraphsChild } from './ParagraphsChild';
 import { apiRoute } from "../App";
 import axios from "axios";
-export * from './ChaptersChild';
+export * from './ParagraphsChild';
 
-export class Chapters extends React.Component {
+export class Paragraphs extends React.Component {
 
     constructor(props) {
         super(props);
@@ -14,7 +14,8 @@ export class Chapters extends React.Component {
         this.state = {
             dyslexia: false,
             subject: {},
-            chapters: []
+            chapter: {},
+            paragraphs: []
         };
 
         this.authMiddleware = new AuthMiddleware();
@@ -36,9 +37,15 @@ export class Chapters extends React.Component {
             });
         });
 
-        axios.get(apiRoute() + `/subjects/${this.props.match.params.subjectUuid}/chapters`).then(res => {
+        axios.get(apiRoute() + `/chapters/${this.props.match.params.chapterUuid}`).then(res => {
             this.setState({
-                chapters: res.data
+                chapter: res.data
+            });
+        });
+
+        axios.get(apiRoute() + `/chapters/${this.props.match.params.chapterUuid}/paragraphs`).then(res => {
+            this.setState({
+                paragraphs: res.data
             });
         });
 
@@ -72,31 +79,31 @@ export class Chapters extends React.Component {
     }
 
     render() {
-        let chapterChilds = this.state.chapters;
+        let paragraphChilds = this.state.paragraphs;
 
         return(
             <div className="container mx-auto">
                 <MetaTags>
-                    <title>Profielwerkstuk — Subject — {this.state.subject.name}</title>
-                    <meta name="description" content={`Start learning for the ${this.state.subject.name} subject!`} />
+                    <title>Profielwerkstuk — Chapter — {this.state.chapter.name}</title>
+                    <meta name="description" content={`Start learning for the ${this.state.chapter.name} subject!`} />
                 </MetaTags>
                 <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                    {this.state.subject.name}
+                    {this.state.subject.name} - {this.state.chapter.name}
                 </h1>
                 <h2 className={`text-center text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                    Selecteer een hoofdstuk om verder te gaan met leren, <br />
-                    of leer alle hoofdstukken in een keer.
+                    Selecteer een paragraaf om te leren!<br />
                 </h2>
                 <div className="mt-10 grid justify-center gap-4 mx-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                    {chapterChilds.map(chapter => {
+                    {paragraphChilds.map(paragraph => {
                         const data = {
                             authMiddleware: this.authMiddleware,
                             dyslexia: this.state.dyslexia,
-                            chapter: chapter,
-                            subject: this.state.subject
+                            paragraph: paragraph,
+                            subject: this.state.subject,
+                            chapter: this.state.chapter
                         }
 
-                        return(<ChaptersChild data={data} key={chapter.uuid.toString()} />);
+                        return(<ParagraphsChild data={data} key={paragraph.uuid.toString()} />);
                     })}
                 </div>
             </div>

@@ -1,23 +1,21 @@
 import React from "react";
 import MetaTags from "react-meta-tags";
 import { AuthMiddleware } from "../../middlewares/AuthMiddleware";
-import { ChaptersChild } from './ChaptersChild';
 import { apiRoute } from "../App";
 import axios from "axios";
-export * from './ChaptersChild';
 
-export class Chapters extends React.Component {
+export class Play extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             dyslexia: false,
-            subject: {},
-            chapters: []
+            myAnswer: "poep"
         };
 
         this.authMiddleware = new AuthMiddleware();
+        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
@@ -30,17 +28,7 @@ export class Chapters extends React.Component {
         });
 
 
-        axios.get(apiRoute() + `/subjects/${this.props.match.params.subjectUuid}`).then(res => {
-            this.setState({
-                subject: res.data
-            });
-        });
-
-        axios.get(apiRoute() + `/subjects/${this.props.match.params.subjectUuid}/chapters`).then(res => {
-            this.setState({
-                chapters: res.data
-            });
-        });
+        //TODO: Request existing question if one otherwise ask for new question.
 
         this.authMiddleware.getUser().then(user => {
             if ((user.flags & 0x1) === 0x1) {
@@ -71,34 +59,36 @@ export class Chapters extends React.Component {
         });
     }
 
+    handleChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
+    }
+
     render() {
-        let chapterChilds = this.state.chapters;
+        let subjectChilds = this.state.subjects;
 
         return(
             <div className="container mx-auto">
                 <MetaTags>
-                    <title>Profielwerkstuk — Subject — {this.state.subject.name}</title>
-                    <meta name="description" content={`Start learning for the ${this.state.subject.name} subject!`} />
+                    <title>Profielwerkstuk — Leren</title>
+                    <meta name="description" content="Select a subject to start learning from." />
                 </MetaTags>
                 <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                    {this.state.subject.name}
+                    Titel van hoofdstuk etc.
                 </h1>
-                <h2 className={`text-center text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                    Selecteer een hoofdstuk om verder te gaan met leren, <br />
-                    of leer alle hoofdstukken in een keer.
+                <h2 className={`text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                    Informatie
                 </h2>
-                <div className="mt-10 grid justify-center gap-4 mx-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                    {chapterChilds.map(chapter => {
-                        const data = {
-                            authMiddleware: this.authMiddleware,
-                            dyslexia: this.state.dyslexia,
-                            chapter: chapter,
-                            subject: this.state.subject
-                        }
-
-                        return(<ChaptersChild data={data} key={chapter.uuid.toString()} />);
-                    })}
-                </div>
+                <h2 className={`text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                    Vraag
+                </h2>
+                <label className={`font-semibold text-sm text-gray-600 dark:text-dark-text-primary pb-1 block ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>Jouw antwoord: </label>
+                <input name="myAnswer" type="text" autoComplete="off" value={this.state.myAnswer} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`} />
             </div>
         );
     }
