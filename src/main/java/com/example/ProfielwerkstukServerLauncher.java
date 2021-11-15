@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executor;
@@ -25,11 +26,19 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
 
     public APIController apiController;
     private static Connection connection;
+    private static long lastConnectionRequest;
 
     public static Connection getConnection() throws SQLException {
-        if (connection.isClosed()) {
+        if (connection == null || connection.isClosed()) {
             return startConnection();
         }
+
+        if (System.currentTimeMillis() >= lastConnectionRequest) {
+            connection.prepareStatement("SELECT 1;").executeQuery();
+        }
+
+        lastConnectionRequest = System.currentTimeMillis() + 4L * 60L * 60L * 1000L;
+
         return connection;
     }
 
@@ -38,7 +47,7 @@ public final class ProfielwerkstukServerLauncher extends MultithreadedHttpServer
         String databasePassword = System.getenv("DB_PASSWORD");
         String databaseUsername = System.getenv("DB_USERNAME");
         String databaseName = System.getenv("DB_NAME");
-        String formattedConnString = String.format("jdbc:mysql://%s/%s?autoReconnect=true&autoReconnectForPools=true&interactiveClient=true&characterEncoding=UTF-8", databaseIp, databaseName);
+        String formattedConnString = String.format("jdbc:mysql://%s/%s?autoReconnect=true&useUnicode=yes", databaseIp, databaseName);
 
         connection = DriverManager.getConnection(formattedConnString, databaseUsername, databasePassword);
         return connection;
