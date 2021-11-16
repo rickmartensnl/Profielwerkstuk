@@ -134,7 +134,8 @@ export class Register extends React.Component {
             }
 
             axios.post(`${apiRoute()}/auth/register`, {email: email, username: username, password: password, terms: terms}).then(result => {
-                alert('Je gegevens zijn correct. Ik ga je token opslaan.');
+                localStorage.setItem("token", result.data.token);
+                this.props.history.push('/app');
             }).catch(error => {
                 alert('Er is iets fout gegaan.');
                 console.error(error);
