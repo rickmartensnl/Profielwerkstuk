@@ -4,6 +4,7 @@ import { AuthMiddleware } from "../../middlewares/AuthMiddleware";
 import { SubjectsChild } from './SubjectsChild';
 import { apiRoute } from "../App";
 import axios from "axios";
+import { Header } from "../shared/Header";
 export * from './SubjectsChild';
 
 export class Subjects extends React.Component {
@@ -68,27 +69,30 @@ export class Subjects extends React.Component {
         let subjectChilds = this.state.subjects;
 
         return(
-            <div className="container mx-auto">
+            <div>
                 <MetaTags>
                     <title>Profielwerkstuk — Subjects</title>
                     <meta name="description" content="Select a subject to start learning from." />
                 </MetaTags>
-                <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                    Hoofdstukken
-                </h1>
-                <h2 className={`text-center text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                    Selecteer een hoofdstuk om te beginnen met oefenen.
-                </h2>
-                <div className="mt-10 grid justify-items-center gap-4 mx-4">
-                    {subjectChilds.map(subject => {
-                        const data = {
-                            authMiddleware: this.authMiddleware,
-                            dyslexia: this.state.dyslexia,
-                            subject: subject
-                        }
+                <Header />
+                <div className="container mx-auto">
+                    <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                        Hoofdstukken
+                    </h1>
+                    <h2 className={`text-center text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                        Selecteer een hoofdstuk om te beginnen met oefenen.
+                    </h2>
+                    <div className="mt-10 grid justify-items-center gap-4 mx-4">
+                        {subjectChilds.map(subject => {
+                            const data = {
+                                authMiddleware: this.authMiddleware,
+                                dyslexia: this.state.dyslexia,
+                                subject: subject
+                            }
 
-                        return(<SubjectsChild data={data} key={subject.uuid.toString()} />);
-                    })}
+                            return(<SubjectsChild data={data} key={subject.uuid.toString()} />);
+                        })}
+                    </div>
                 </div>
             </div>
         );

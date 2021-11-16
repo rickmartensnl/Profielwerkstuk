@@ -3,6 +3,7 @@ import MetaTags from "react-meta-tags";
 import { AuthMiddleware } from "../../middlewares/AuthMiddleware";
 import { apiRoute } from "../App";
 import axios from "axios";
+import { Header } from "../shared/Header";
 
 export class Play extends React.Component {
 
@@ -70,25 +71,26 @@ export class Play extends React.Component {
     }
 
     render() {
-        let subjectChilds = this.state.subjects;
-
         return(
-            <div className="container mx-auto">
+            <div>
                 <MetaTags>
                     <title>Profielwerkstuk — Leren</title>
                     <meta name="description" content="Select a subject to start learning from." />
                 </MetaTags>
-                <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                    Titel van hoofdstuk etc.
-                </h1>
-                <h2 className={`text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                    Informatie
-                </h2>
-                <h2 className={`text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                    Vraag
-                </h2>
-                <label className={`font-semibold text-sm text-gray-600 dark:text-dark-text-primary pb-1 block ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>Jouw antwoord: </label>
-                <input name="myAnswer" type="text" autoComplete="off" value={this.state.myAnswer} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`} />
+                <Header />
+                <div className="container mx-auto">
+                    <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                        Titel van hoofdstuk etc.
+                    </h1>
+                    <h2 className={`text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                        Informatie
+                    </h2>
+                    <h2 className={`text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                        Vraag
+                    </h2>
+                    <label className={`font-semibold text-sm text-gray-600 dark:text-dark-text-primary pb-1 block ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>Jouw antwoord: </label>
+                    <input name="myAnswer" type="text" autoComplete="off" value={this.state.myAnswer} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`} />
+                </div>
             </div>
         );
     }

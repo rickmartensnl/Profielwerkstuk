@@ -4,6 +4,7 @@ import { AuthMiddleware } from "../../middlewares/AuthMiddleware";
 import { ChaptersChild } from './ChaptersChild';
 import { apiRoute } from "../App";
 import axios from "axios";
+import { Header } from "../shared/Header";
 export * from './ChaptersChild';
 
 export class Chapters extends React.Component {
@@ -75,29 +76,32 @@ export class Chapters extends React.Component {
         let chapterChilds = this.state.chapters;
 
         return(
-            <div className="container mx-auto">
+            <div>
                 <MetaTags>
                     <title>Profielwerkstuk — Subject — {this.state.subject.name}</title>
                     <meta name="description" content={`Start learning for the ${this.state.subject.name} subject!`} />
                 </MetaTags>
-                <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                    {this.state.subject.name}
-                </h1>
-                <h2 className={`text-center text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                    Selecteer een hoofdstuk om verder te gaan met leren, <br />
-                    of leer alle hoofdstukken in een keer.
-                </h2>
-                <div className="mt-10 grid justify-center gap-4 mx-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                    {chapterChilds.map(chapter => {
-                        const data = {
-                            authMiddleware: this.authMiddleware,
-                            dyslexia: this.state.dyslexia,
-                            chapter: chapter,
-                            subject: this.state.subject
-                        }
+                <Header />
+                <div className="container mx-auto">
+                    <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                        {this.state.subject.name}
+                    </h1>
+                    <h2 className={`text-center text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                        Selecteer een hoofdstuk om verder te gaan met leren, <br />
+                        of leer alle hoofdstukken in een keer.
+                    </h2>
+                    <div className="mt-10 grid justify-center gap-4 mx-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                        {chapterChilds.map(chapter => {
+                            const data = {
+                                authMiddleware: this.authMiddleware,
+                                dyslexia: this.state.dyslexia,
+                                chapter: chapter,
+                                subject: this.state.subject
+                            }
 
-                        return(<ChaptersChild data={data} key={chapter.uuid.toString()} />);
-                    })}
+                            return(<ChaptersChild data={data} key={chapter.uuid.toString()} />);
+                        })}
+                    </div>
                 </div>
             </div>
         );
