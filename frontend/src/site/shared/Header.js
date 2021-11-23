@@ -67,9 +67,6 @@ export class Header extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log(prevProps)
-        console.log(this.state.loggedIn)
-        console.log(prevProps.data.loggedIn)
         if (prevProps.data.loggedIn === true && this.state.loggedIn !== true) {
             this.setState({
                 loggedIn: true,

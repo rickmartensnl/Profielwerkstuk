@@ -78,7 +78,7 @@ public class UserHistoryManager {
                 this.correctPercentage = resultSet.getDouble("correctPercentage");
                 this.question = QuestionManager.getQuestionManager().getQuestion(UUID.fromString(resultSet.getString("question_uuid")));
                 java.lang.reflect.Type type = new TypeToken<Map<String, QuestionManager.QuestionVariable>>() {}.getType();
-                this.variableValues = new Gson().fromJson(resultSet.getString("variables"), type);
+                this.variableValues = new Gson().fromJson(resultSet.getString("variableValues"), type);
                 this.user = UserManager.getUserManager().getUser(UUID.fromString(resultSet.getString("user_uuid")));
             }
         }

@@ -14,7 +14,8 @@ export class Play extends React.Component {
             dyslexia: false,
             loggedIn: true,
             paragraph: {},
-            myAnswer: "poep"
+            question: {},
+            myAnswer: ""
         };
 
         this.authMiddleware = new AuthMiddleware();
@@ -44,8 +45,18 @@ export class Play extends React.Component {
             });
         });
 
-        this.authMiddleware.newOrLastQuestion().then(question => {
+        this.authMiddleware.newOrLastQuestion().then(questionPlay => {
+            questionPlay = questionPlay[0]
 
+            for (const variable in questionPlay.variableValues) {
+                const varData = questionPlay.variableValues[variable]
+                questionPlay.question.information = questionPlay.question.information.replaceAll(`%%${variable}%%`, varData.theValue);
+                questionPlay.question.question = questionPlay.question.question.replaceAll(`%%${variable}%%`, varData.theValue);
+            }
+
+            this.setState({
+                question: questionPlay
+            });
         })
 
 
@@ -98,6 +109,12 @@ export class Play extends React.Component {
             loggedIn: this.state.loggedIn,
         }
 
+        let question = this.state.question;
+
+        if (question.question === undefined) {
+            return("Hold on!")
+        }
+
         return(
             <div>
                 <MetaTags>
@@ -109,13 +126,17 @@ export class Play extends React.Component {
                     <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
                         Titel van hoofdstuk etc.
                     </h1>
-                    <h2 className={`text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                        Informatie
+                    <h2 className={`mt-2 text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                        {
+                            question.question.information
+                        }
                     </h2>
-                    <h2 className={`text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                        Vraag
+                    <h2 className={`mt-2 text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                        {
+                            question.question.question
+                        }
                     </h2>
-                    <label className={`font-semibold text-sm text-gray-600 dark:text-dark-text-primary pb-1 block ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>Jouw antwoord: </label>
+                    <label className={`mt-5 font-semibold text-sm text-gray-600 dark:text-dark-text-primary pb-1 block ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>Jouw antwoord: </label>
                     <input name="myAnswer" type="text" autoComplete="off" value={this.state.myAnswer} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`} />
                 </div>
             </div>

@@ -26,7 +26,7 @@ export class AuthMiddleware {
     newOrLastQuestion() {
         try {
             return this.doRequest('/users/@me/sessions?type=unfinished', "GET").then(res => {
-               console.log(res)
+               return res.data;
             });
         } catch (e) {
             return null;
