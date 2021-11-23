@@ -24,15 +24,16 @@ export class Login extends React.Component {
     }
 
     componentDidMount() {
+        window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        });
+
         if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
-            window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
-                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.documentElement.classList.add('dark')
-                } else {
-                    document.documentElement.classList.remove('dark')
-                }
-            });
         }
 
         console.log("Checking if token is set.");

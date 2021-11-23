@@ -58,6 +58,23 @@ export class Header extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            loggedIn: false
+        };
+
+        this.authMiddleware = this.props.data.authMiddleware;
+    }
+
+    componentDidUpdate(prevProps) {
+        console.log(prevProps)
+        console.log(this.state.loggedIn)
+        console.log(prevProps.data.loggedIn)
+        if (prevProps.data.loggedIn === true && this.state.loggedIn !== true) {
+            this.setState({
+                loggedIn: true,
+            });
+        }
     }
 
     render() {
@@ -145,12 +162,20 @@ export class Header extends React.Component {
                             </Link>
                         </Popover.Group>
                         <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-                            <Link to="/login" className="whitespace-nowrap text-base font-medium text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary">
-                                Sign in
-                            </Link>
-                            <Link to="/register" className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600">
-                                Sign up
-                            </Link>
+                            {this.state.loggedIn ? (
+                                <Link to="/app" className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600">
+                                    Leren!
+                                </Link>
+                            ) : (
+                                <div>
+                                    <Link to="/login" className="whitespace-nowrap text-base font-medium text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary">
+                                        Sign in
+                                    </Link>
+                                    <Link to="/register" className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600">
+                                        Sign up
+                                    </Link>
+                                </div>)
+                            }
                         </div>
                     </div>
                 </div>
@@ -200,15 +225,19 @@ export class Header extends React.Component {
                                     </Link>
                                 </div>
                                 <div>
-                                    <Link to="/register" className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600">
-                                        Sign up
-                                    </Link>
-                                    <p className="mt-6 text-center text-base font-medium text-gray-900 dark:text-dark-text-secondary">
-                                        Existing customer?{' '}
-                                        <Link to="/login" className="text-blue-500 hover:text-blue-600">
-                                            Sign in
-                                        </Link>
-                                    </p>
+                                    {this.state.loggedIn ? (<p>test</p>) : (
+                                        <div>
+                                            <Link to="/register" className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600">
+                                                Sign up
+                                            </Link>
+                                            <p className="mt-6 text-center text-base font-medium text-gray-900 dark:text-dark-text-secondary">
+                                                Existing customer?{' '}
+                                                <Link to="/login" className="text-blue-500 hover:text-blue-600">
+                                                    Sign in
+                                                </Link>
+                                            </p>
+                                        </div>)
+                                    }
                                 </div>
                             </div>
                         </div>

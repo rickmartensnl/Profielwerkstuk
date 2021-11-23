@@ -14,6 +14,7 @@ export class Chapters extends React.Component {
 
         this.state = {
             dyslexia: false,
+            loggedIn: true,
             subject: {},
             chapters: []
         };
@@ -24,9 +25,15 @@ export class Chapters extends React.Component {
     componentDidMount() {
         this.authMiddleware.isValid().then(res => {
             if (!res) {
+                this.setState(prevState => ({
+                    loggedIn: false
+                }));
                 this.props.history.push('/login');
             }
         }).catch(err => {
+            this.setState(prevState => ({
+                loggedIn: false
+            }));
             this.props.history.push('/login');
         });
 
@@ -59,8 +66,7 @@ export class Chapters extends React.Component {
                 document.documentElement.classList.add('dark');
             } else if ((user.flags & 0x4) === 0x4) {
                 document.documentElement.classList.remove('dark');
-            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.classList.add('dark');
+            } else {
                 window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
                     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                         document.documentElement.classList.add('dark')
@@ -68,12 +74,21 @@ export class Chapters extends React.Component {
                         document.documentElement.classList.remove('dark')
                     }
                 });
+
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('dark');
+                }
             }
         });
     }
 
     render() {
         let chapterChilds = this.state.chapters;
+        let data = {
+            authMiddleware: this.authMiddleware,
+            dyslexia: this.state.dyslexia,
+            loggedIn: this.state.loggedIn,
+        }
 
         return(
             <div>
@@ -81,7 +96,7 @@ export class Chapters extends React.Component {
                     <title>Profielwerkstuk — Subject — {this.state.subject.name}</title>
                     <meta name="description" content={`Start learning for the ${this.state.subject.name} subject!`} />
                 </MetaTags>
-                <Header />
+                <Header data={data} />
                 <div className="container mx-auto">
                     <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
                         {this.state.subject.name}

@@ -14,6 +14,7 @@ export class Paragraphs extends React.Component {
 
         this.state = {
             dyslexia: false,
+            loggedIn: true,
             subject: {},
             chapter: {},
             paragraphs: []
@@ -25,9 +26,15 @@ export class Paragraphs extends React.Component {
     componentDidMount() {
         this.authMiddleware.isValid().then(res => {
             if (!res) {
+                this.setState(prevState => ({
+                    loggedIn: false
+                }));
                 this.props.history.push('/login');
             }
         }).catch(err => {
+            this.setState(prevState => ({
+                loggedIn: false
+            }));
             this.props.history.push('/login');
         });
 
@@ -66,8 +73,7 @@ export class Paragraphs extends React.Component {
                 document.documentElement.classList.add('dark');
             } else if ((user.flags & 0x4) === 0x4) {
                 document.documentElement.classList.remove('dark');
-            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.classList.add('dark');
+            } else {
                 window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
                     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                         document.documentElement.classList.add('dark')
@@ -75,6 +81,10 @@ export class Paragraphs extends React.Component {
                         document.documentElement.classList.remove('dark')
                     }
                 });
+
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('dark');
+                }
             }
         });
     }
@@ -82,13 +92,19 @@ export class Paragraphs extends React.Component {
     render() {
         let paragraphChilds = this.state.paragraphs;
 
+        let data = {
+            authMiddleware: this.authMiddleware,
+            dyslexia: this.state.dyslexia,
+            loggedIn: this.state.loggedIn,
+        }
+
         return(
             <div>
                 <MetaTags>
                     <title>Profielwerkstuk — Chapter — {this.state.chapter.name}</title>
                     <meta name="description" content={`Start learning for the ${this.state.chapter.name} subject!`} />
                 </MetaTags>
-                <Header />
+                <Header data={data} />
                 <div className="container mx-auto">
                     <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
                         {this.state.subject.name} - {this.state.chapter.name}
