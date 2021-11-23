@@ -23,6 +23,16 @@ export class AuthMiddleware {
         }
     }
 
+    newOrLastQuestion() {
+        try {
+            return this.doRequest('/users/@me/sessions?type=unfinished', "GET").then(res => {
+               console.log(res)
+            });
+        } catch (e) {
+            return null;
+        }
+    }
+
     doRequest($endpoint, $method) {
         if (this.token == null) {
             return Promise.reject("noTokenSaved");

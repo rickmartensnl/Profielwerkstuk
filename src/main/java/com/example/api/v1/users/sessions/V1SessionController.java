@@ -25,6 +25,10 @@ public class V1SessionController implements UserController {
 
     @Override
     public @NotNull HttpResponse runRequest(HttpRequest httpRequest) {
+        if (httpRequest.getMethod() == HttpMethod.POST) {
+            return submitAnswer(httpRequest);
+        }
+
         SessionRequestType sessionRequestType = SessionRequestType.getFromQuery(httpRequest);
 
         try {
@@ -46,6 +50,10 @@ public class V1SessionController implements UserController {
         } catch (DatabaseOfflineException exception) {
             return HttpResponse.ofCode(500).withJson("{\"message\":\"500: Internal Server Error\",\"code\":\"" + Sentry.getLastEventId() + "\"}");
         }
+    }
+
+    private HttpResponse submitAnswer(HttpRequest httpRequest) {
+        return HttpResponse.ok200().withPlainText("workin' on it");
     }
 
     enum SessionRequestType {

@@ -3,9 +3,13 @@ package com.example.utils;
 import com.example.database.impl.QuestionManager;
 import com.google.gson.internal.LinkedTreeMap;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class QuestionUtil {
 
@@ -50,6 +54,49 @@ public class QuestionUtil {
         }
 
         return null;
+    }
+
+    public static int calculateAnswer(String calc) throws ScriptException {
+        ScriptEngineManager mgr = new ScriptEngineManager();
+        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+
+        Pattern pattern = Pattern.compile("(?<=\\{).*?(?=})");
+
+        Matcher matcher = pattern.matcher(calc);
+        if (matcher.find()) {
+            String group0 = matcher.group(0);
+
+            if (group0.toLowerCase().startsWith("$asin[")) {
+                String asin = group0.replaceFirst("\\$asin\\[", "");
+                asin = asin.substring(0, asin.length() - 1);
+
+                if (asin.contains("$")) {
+                    String other = asin.substring(asin.indexOf("$"));
+                    other = other.substring(0, other.indexOf("]") + 1);
+
+                    System.out.println("contains another var: " + asin);
+                    if (other.toLowerCase().startsWith("$sin[")) {
+                        String sin = other.replaceFirst("\\$sin\\[", "");
+                        sin = sin.substring(0, sin.length() - 1);
+
+                        Double sinans = Math.toRadians(Double.parseDouble(sin));
+                        sinans = Math.sin(sinans);
+
+                        asin = asin.replaceFirst("\\$sin\\[" + sin + "]", String.valueOf(sinans));
+                    }
+
+                    Double toAsin = (Double) engine.eval(asin);
+                    Double answer = Math.asin(toAsin);
+                    answer = Math.toDegrees(answer);
+
+                    calc = calc.replaceFirst("\\{[^\"]+}|\\\\S+", String.valueOf(answer));
+                }
+            }
+        }
+
+        Double answer = (Double) engine.eval(calc);
+
+        return (int) Math.round(answer);
     }
 
 }

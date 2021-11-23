@@ -28,7 +28,7 @@ public class UserHistoryManager {
 
     public UserHistory createNewUserHistory(UserManager.User user) throws DatabaseOfflineException {
         try {
-            return new UserHistory(user, null, null, null, UUID.fromString("8630feb6-1bde-11ec-9e40-2e399d554045"));
+            return new UserHistory(user, null, null, null, UUID.fromString("f928f9eb-4c51-11ec-9265-2e399d554045"));
         } catch (SQLException exception) {
             Sentry.captureException(exception);
             throw new DatabaseOfflineException();

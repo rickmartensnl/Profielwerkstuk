@@ -13,6 +13,7 @@ export class Play extends React.Component {
         this.state = {
             dyslexia: false,
             loggedIn: true,
+            paragraph: {},
             myAnswer: "poep"
         };
 
@@ -37,6 +38,16 @@ export class Play extends React.Component {
 
 
         //TODO: Request existing question if one otherwise ask for new question.
+        axios.get(apiRoute() + `/chapters/${this.props.match.params.chapterUuid}/paragraphs/${this.props.match.params.paragraphUuid}`).then(res => {
+            this.setState({
+                paragraph: res.data
+            });
+        });
+
+        this.authMiddleware.newOrLastQuestion().then(question => {
+
+        })
+
 
         this.authMiddleware.getUser().then(user => {
             if ((user.flags & 0x1) === 0x1) {
