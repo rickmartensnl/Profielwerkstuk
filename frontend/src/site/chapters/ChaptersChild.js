@@ -21,6 +21,14 @@ export class ChaptersChild extends React.Component {
             width: progress + '%'
         }
 
+        let subjectUuid = this.props.data.subject.uuid === undefined ? "" : this.props.data.subject.uuid.replaceAll('-', '');
+        let chapterUuid = this.props.data.chapter.uuid === undefined ? "" : this.props.data.chapter.uuid.replaceAll('-', '');
+
+        if (subjectUuid === "" || chapterUuid === "") {
+            location.reload();
+            return("Hold on!");
+        }
+
         return(
             <div className="rounded-xl p-8 w-full bg-gray-100 dark:bg-dark-primary">
                 <div className="content-center">
@@ -34,7 +42,7 @@ export class ChaptersChild extends React.Component {
                             </svg>
                         </div>
                     </h3>
-                    <Link to={`/subjects/${this.subject.uuid.replaceAll('-', '')}/${this.chapter.uuid.replaceAll('-', '')}`} className="p-2 text-right inline-block float-right bg-blue-500 rounded-lg">
+                    <Link to={`/subjects/${subjectUuid}/${chapterUuid}`} className="p-2 text-right inline-block float-right bg-blue-500 rounded-lg">
                         Ga verder met leren!
                     </Link>
                 </div>

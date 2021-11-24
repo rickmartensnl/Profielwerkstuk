@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    BrowserRouter as Router,
+    BrowserRouter,
     Switch,
     Redirect,
     Route,
@@ -15,9 +15,10 @@ import { Login, Logout, Register } from './auth/Auth';
 import { Dyslexia } from './Dyslexia';
 
 export class App extends React.Component {
+
     render() {
         return (
-            <Router>
+            <BrowserRouter>
                 <Switch>
                     <Route exact path="/" component={Home} />
 
@@ -44,7 +45,7 @@ export class App extends React.Component {
                         </div>
                     </Route>
                 </Switch>
-            </Router>
+            </BrowserRouter>
         );
     }
 }

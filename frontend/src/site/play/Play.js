@@ -25,15 +25,15 @@ export class Play extends React.Component {
     componentDidMount() {
         this.authMiddleware.isValid().then(res => {
             if (!res) {
-                this.setState(prevState => ({
+                this.setState({
                     loggedIn: false
-                }));
+                });
                 this.props.history.push('/login');
             }
         }).catch(err => {
-            this.setState(prevState => ({
+            this.setState({
                 loggedIn: false
-            }));
+            });
             this.props.history.push('/login');
         });
 
@@ -112,7 +112,28 @@ export class Play extends React.Component {
         let question = this.state.question;
 
         if (question.question === undefined) {
-            return("Hold on!")
+            return(
+                <div>
+                    <MetaTags>
+                        <title>Profielwerkstuk — Leren</title>
+                        <meta name="description" content="Select a subject to start learning from." />
+                    </MetaTags>
+                    <Header data={data} />
+                    <div className="container mx-auto">
+                        <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                            Aan het laden...
+                        </h1>
+                        <h2 className={`mt-2 text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                            Je vraag wordt geladen...
+                        </h2>
+                        <h2 className={`mt-2 text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                            We zijn er bijna....
+                        </h2>
+                        <label className={`mt-5 font-semibold text-sm text-gray-600 dark:text-dark-text-primary pb-1 block ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>Jouw antwoord: </label>
+                        <input name="myAnswer" type="text" autoComplete="off" value={this.state.myAnswer} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`} />
+                    </div>
+                </div>
+            );
         }
 
         return(
