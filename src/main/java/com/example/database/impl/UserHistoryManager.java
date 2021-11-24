@@ -111,6 +111,30 @@ public class UserHistoryManager {
                         this.variableValues.put(entry.getKey(), var);
                     }
                 }
+            } else if (paragraphId != null) {
+                PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("SELECT * FROM `questions` WHERE paragraph_uuid = ?;");
+                preparedStatement.setString(1, paragraphId.toString());
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                ArrayList<QuestionManager.Question> questionArray = new ArrayList<>();
+
+                while (resultSet.next()) {
+                    questionArray.add(QuestionManager.getQuestionManager().getQuestion(UUID.fromString(resultSet.getString("uuid"))));
+                }
+
+                this.question = questionArray.get(new Random().nextInt(questionArray.size()));
+
+                for (Map.Entry<String, QuestionManager.QuestionVariable> entry : this.question.getVariables().entrySet()) {
+                    QuestionManager.QuestionVariable var = new QuestionManager.QuestionVariable(entry.getValue().getType());
+                    if (entry.getValue().getDepends() != null) {
+                        var.setTheValue(String.valueOf(QuestionUtil.generateFromQuestionFormat(entry.getValue(), this.variableValues.get(entry.getValue().getDepends()))));
+                    } else {
+                        var.setTheValue(String.valueOf(QuestionUtil.generateFromQuestionFormat(entry.getValue())));
+                    }
+                    var.setUnit(entry.getValue().getUnit());
+                    var.setDepends(entry.getValue().getDepends());
+                    this.variableValues.put(entry.getKey(), var);
+                }
             }
 
             PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("INSERT INTO `users_play_history` (uuid, answer, flags, correctPercentage, variableValues, question_uuid, user_uuid) VALUES (?, ?, ?, ?, ?, ?, ?);");
