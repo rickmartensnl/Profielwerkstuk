@@ -1,9 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import React, { Fragment } from 'react'
-import { Popover, Transition } from '@headlessui/react'
+import { Popover, Transition, Menu } from '@headlessui/react'
 import {
-    BookmarkAltIcon,
-    CalendarIcon,
     ChartBarIcon,
     CursorClickIcon,
     MenuIcon,
@@ -11,9 +9,11 @@ import {
     PlayIcon,
     RefreshIcon,
     ShieldCheckIcon,
-    SupportIcon,
     ViewGridIcon,
     XIcon,
+    LogoutIcon,
+    AcademicCapIcon,
+    CogIcon,
 } from '@heroicons/react/outline'
 import { ChevronDownIcon } from '@heroicons/react/solid'
 import { Link } from "react-router-dom";
@@ -160,9 +160,53 @@ export class Header extends React.Component {
                         </Popover.Group>
                         <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
                             {this.state.loggedIn ? (
-                                <Link to="/app" className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600">
-                                    Leren!
-                                </Link>
+                                <Menu as="div" className="relative inline-block text-left">
+                                    <div>
+                                        <Menu.Button className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                                            Mijn Account
+                                            <ChevronDownIcon
+                                                className="w-5 h-5 ml-2 -mr-1 text-violet-200 hover:text-violet-100"
+                                                aria-hidden="true"
+                                            />
+                                        </Menu.Button>
+                                    </div>
+                                    <Transition
+                                        as={Fragment}
+                                        enter="transition ease-out duration-100"
+                                        enterFrom="transform opacity-0 scale-95"
+                                        enterTo="transform opacity-100 scale-100"
+                                        leave="transition ease-in duration-75"
+                                        leaveFrom="transform opacity-100 scale-100"
+                                        leaveTo="transform opacity-0 scale-95"
+                                    >
+                                        <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white dark:bg-dark-primary divide-y divide-gray-100 dark:divide-dark-tertiary rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                            <div className="px-1 py-1 ">
+                                                <Menu.Item>
+                                                    <Link to="/app" className={`dark:text-dark-text-secondary dark:hover:text-dark-text-primary group flex rounded-md items-center w-full px-2 py-2 text-sm`}>
+                                                        <AcademicCapIcon className="w-5 h-5 mr-2" />
+                                                        Leren!
+                                                    </Link>
+                                                </Menu.Item>
+                                            </div>
+                                            <div className="px-1 py-1 ">
+                                                <Menu.Item>
+                                                    <Link to="/settings" className={`dark:text-dark-text-secondary dark:hover:text-dark-text-primary group flex rounded-md items-center w-full px-2 py-2 text-sm`}>
+                                                        <CogIcon className="w-5 h-5 mr-2" />
+                                                        Instellingen
+                                                    </Link>
+                                                </Menu.Item>
+                                            </div>
+                                            <div className="px-1 py-1">
+                                                <Menu.Item>
+                                                    <Link to="/logout" className={`text-red-500 hover:text-red-400 dark:hover:text-red-600 group flex rounded-md items-center w-full px-2 py-2 text-sm`}>
+                                                        <LogoutIcon className="w-5 h-5 mr-2" />
+                                                        Uitloggen
+                                                    </Link>
+                                                </Menu.Item>
+                                            </div>
+                                        </Menu.Items>
+                                    </Transition>
+                                </Menu>
                             ) : (
                                 <div>
                                     <Link to="/login" className="whitespace-nowrap text-base font-medium text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary">
@@ -222,7 +266,55 @@ export class Header extends React.Component {
                                     </Link>
                                 </div>
                                 <div>
-                                    {this.state.loggedIn ? (<p>test</p>) : (
+                                    {this.state.loggedIn ? (
+                                        <Menu as="div" className="relative inline-block text-left">
+                                            <div>
+                                                <Menu.Button className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                                                    Mijn Account
+                                                    <ChevronDownIcon
+                                                        className="w-5 h-5 ml-2 -mr-1 text-violet-200 hover:text-violet-100"
+                                                        aria-hidden="true"
+                                                    />
+                                                </Menu.Button>
+                                            </div>
+                                            <Transition
+                                                as={Fragment}
+                                                enter="transition ease-out duration-100"
+                                                enterFrom="transform opacity-0 scale-95"
+                                                enterTo="transform opacity-100 scale-100"
+                                                leave="transition ease-in duration-75"
+                                                leaveFrom="transform opacity-100 scale-100"
+                                                leaveTo="transform opacity-0 scale-95"
+                                            >
+                                                <Menu.Items className="absolute left-0 w-56 mt-2 origin-top-right bg-white dark:bg-dark-primary-2 divide-y divide-gray-100 dark:divide-dark-tertiary rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                    <div className="px-1 py-1 ">
+                                                        <Menu.Item>
+                                                            <Link to="/app" className={`dark:text-dark-text-secondary dark:hover:text-dark-text-primary group flex rounded-md items-center w-full px-2 py-2 text-sm`}>
+                                                                <AcademicCapIcon className="w-5 h-5 mr-2" />
+                                                                Leren!
+                                                            </Link>
+                                                        </Menu.Item>
+                                                    </div>
+                                                    <div className="px-1 py-1 ">
+                                                        <Menu.Item>
+                                                            <Link to="/settings" className={`dark:text-dark-text-secondary dark:hover:text-dark-text-primary group flex rounded-md items-center w-full px-2 py-2 text-sm`}>
+                                                                <CogIcon className="w-5 h-5 mr-2" />
+                                                                Instellingen
+                                                            </Link>
+                                                        </Menu.Item>
+                                                    </div>
+                                                    <div className="px-1 py-1">
+                                                        <Menu.Item>
+                                                            <Link to="/logout" className={`text-red-500 hover:text-red-400 dark:hover:text-red-600 group flex rounded-md items-center w-full px-2 py-2 text-sm`}>
+                                                                <LogoutIcon className="w-5 h-5 mr-2" />
+                                                                Uitloggen
+                                                            </Link>
+                                                        </Menu.Item>
+                                                    </div>
+                                                </Menu.Items>
+                                            </Transition>
+                                        </Menu>
+                                    ) : (
                                         <div>
                                             <Link to="/register" className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600">
                                                 Sign up

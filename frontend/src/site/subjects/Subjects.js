@@ -22,13 +22,18 @@ export class Subjects extends React.Component {
     }
 
     async componentDidMount() {
-        let valid = await this.authMiddleware.isValid();
+        try {
+            let valid = await this.authMiddleware.isValid();
 
-        if (!valid) {
-            this.setState(prevState => ({
-                loggedIn: false
-            }));
+            if (!valid) {
+                this.setState(prevState => ({
+                    loggedIn: false
+                }));
+                this.props.history.push('/login');
+            }
+        } catch (e) {
             this.props.history.push('/login');
+            return;
         }
 
         let subjectsRequest = await axios.get(apiRoute() + '/subjects');

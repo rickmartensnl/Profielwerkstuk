@@ -13,6 +13,7 @@ import { Chapters } from './chapters/Chapters';
 import { Play } from './play/Play';
 import { Login, Logout, Register } from './auth/Auth';
 import { Dyslexia } from './Dyslexia';
+import { NotFound } from "./errors/404";
 
 export class App extends React.Component {
 
@@ -38,12 +39,7 @@ export class App extends React.Component {
                     {/* Dyslexia test */}
                     <Route path="/dyslexia" component={Dyslexia} />
 
-                    <Route path="*">
-                        <div>
-                            <h1>Whoops, I can't find this page!</h1>
-                            <Link to="/">Get back to the home page.</Link>
-                        </div>
-                    </Route>
+                    <Route path="*" component={NotFound} />
                 </Switch>
             </BrowserRouter>
         );
@@ -52,22 +48,4 @@ export class App extends React.Component {
 
 export function apiRoute() {
     return location.origin + '/api/v1'
-}
-
-export class Child extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            paragraphUuid: this.props.match.params.paragraphUuid
-        };
-    }
-
-    render() {
-        return (
-            <p>ID: {this.state.paragraphUuid}, Je zal verder gaan met dit leren als ik ready to go ben.</p>
-        );
-    }
-
 }

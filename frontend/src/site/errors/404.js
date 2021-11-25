@@ -1,9 +1,11 @@
 import React from 'react';
 import MetaTags from "react-meta-tags";
-import { Header } from "./shared/Header";
-import { AuthMiddleware } from "../middlewares/AuthMiddleware";
+import { Header } from "../shared/Header";
+import { AuthMiddleware } from "../../middlewares/AuthMiddleware";
+import { ArrowLeftIcon, ExclamationCircleIcon } from "@heroicons/react/outline";
+import { Link } from "react-router-dom";
 
-export class Home extends React.Component {
+export class NotFound extends React.Component {
 
     constructor(props) {
         super(props);
@@ -67,13 +69,23 @@ export class Home extends React.Component {
         return(
             <div>
                 <MetaTags>
-                    <title>Profielwerkstuk — Modernize your Learning Experience</title>
+                    <title>Profielwerkstuk — Page not found!</title>
                     <meta name="description" content="A modernized way to improve learning experiences." />
                 </MetaTags>
                 <Header data={data} />
-                <p>
-                    This is the body
-                </p>
+                <div className="container mx-auto p-5">
+                    <h1 className={`group flex rounded-md items-center w-full px-2 py-2 text-4xl`}>
+                        <ExclamationCircleIcon className="w-5 h-5 mr-5" />
+                        Pagina niet gevonden!
+                    </h1>
+                    <p className={`dark:text-dark-text-secondary`}>
+                        We konden de pagina die je zocht niet vinden. Probeer het later nog eens.
+                    </p>
+                    <Link to="/" className="mt-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600">
+                        <ArrowLeftIcon className="w-5 h5 mr-2" />
+                        Terug naar de homepagina!
+                    </Link>
+                </div>
             </div>
         );
     }
