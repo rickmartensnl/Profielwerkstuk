@@ -29,7 +29,7 @@ export class Register extends React.Component {
         this.handleRegister = this.handleRegister.bind(this);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 document.documentElement.classList.add('dark')
@@ -55,9 +55,10 @@ export class Register extends React.Component {
             }
         };
 
-        axios.get(`${apiRoute()}/users/@me`, config).then(result => {
+        let userRequest = await axios.get(`${apiRoute()}/users/@me`, config);
+        if (userRequest.status >= 200 && userRequest.status < 300) {
             this.props.history.push('/app');
-        }).catch(console.warn);
+        }
     }
 
     handleChange(event) {

@@ -20,12 +20,7 @@ export class SubjectsChild extends React.Component {
             width: progress + '%'
         }
 
-        let subjectUuid = this.props.data.subject.uuid === undefined ? "" : this.props.data.subject.uuid.replaceAll('-', '');
-
-        if (subjectUuid === "") {
-            location.reload();
-            return("Hold on!");
-        }
+        let subjectUuid = this.props.data.subject.uuid.replaceAll('-', '');
 
         return(
             <div className="rounded-xl p-8 w-full bg-gray-100 dark:bg-dark-primary">

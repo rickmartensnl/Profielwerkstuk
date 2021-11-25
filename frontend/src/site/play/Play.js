@@ -22,74 +22,64 @@ export class Play extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentDidMount() {
-        this.authMiddleware.isValid().then(res => {
-            if (!res) {
-                this.setState({
-                    loggedIn: false
-                });
-                this.props.history.push('/login');
-            }
-        }).catch(err => {
-            this.setState({
+    async componentDidMount() {
+        let valid = await this.authMiddleware.isValid();
+
+        if (!valid) {
+            this.setState(prevState => ({
                 loggedIn: false
-            });
+            }));
             this.props.history.push('/login');
+        }
+
+        let paragraphRequest = await axios.get(apiRoute() + `/chapters/${this.props.match.params.chapterUuid}/paragraphs/${this.props.match.params.paragraphUuid}`);
+        this.setState({
+            paragraph: paragraphRequest.data
         });
 
+        let questionPlayRequest = await this.authMiddleware.newOrLastQuestion();
+        questionPlayRequest = questionPlayRequest[0]
 
-        //TODO: Request existing question if one otherwise ask for new question.
-        axios.get(apiRoute() + `/chapters/${this.props.match.params.chapterUuid}/paragraphs/${this.props.match.params.paragraphUuid}`).then(res => {
-            this.setState({
-                paragraph: res.data
-            });
+        for (const variable in questionPlayRequest.variableValues) {
+            const varData = questionPlayRequest.variableValues[variable]
+            questionPlayRequest.question.information = questionPlayRequest.question.information.replaceAll(`%%${variable}%%`, varData.theValue);
+            questionPlayRequest.question.question = questionPlayRequest.question.question.replaceAll(`%%${variable}%%`, varData.theValue);
+        }
+
+        this.setState({
+            question: questionPlayRequest
         });
 
-        this.authMiddleware.newOrLastQuestion().then(questionPlay => {
-            questionPlay = questionPlay[0]
+        let user = await this.authMiddleware.getUser();
 
-            for (const variable in questionPlay.variableValues) {
-                const varData = questionPlay.variableValues[variable]
-                questionPlay.question.information = questionPlay.question.information.replaceAll(`%%${variable}%%`, varData.theValue);
-                questionPlay.question.question = questionPlay.question.question.replaceAll(`%%${variable}%%`, varData.theValue);
-            }
+        if ((user.flags & 0x1) === 0x1) {
+            this.setState(prevState => ({
+                dyslexia: true
+            }));
+        } else {
+            this.setState(prevState => ({
+                dyslexia: false
+            }));
+        }
 
-            this.setState({
-                question: questionPlay
-            });
-        })
-
-
-        this.authMiddleware.getUser().then(user => {
-            if ((user.flags & 0x1) === 0x1) {
-                this.setState(prevState => ({
-                    dyslexia: true
-                }));
-            } else {
-                this.setState(prevState => ({
-                    dyslexia: false
-                }));
-            }
-
-            //Dark Mode
-            if ((user.flags & 0x2) === 0x2) {
-                document.documentElement.classList.add('dark');
-            } else if ((user.flags & 0x4) === 0x4) {
-                document.documentElement.classList.remove('dark');
-            } else {
-                window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
-                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                        document.documentElement.classList.add('dark')
-                    } else {
-                        document.documentElement.classList.remove('dark')
-                    }
-                });
-
+        //Dark Mode
+        if ((user.flags & 0x2) === 0x2) {
+            document.documentElement.classList.add('dark');
+        } else if ((user.flags & 0x4) === 0x4) {
+            document.documentElement.classList.remove('dark');
+        } else {
+            window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
                 if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.add('dark')
+                } else {
+                    document.documentElement.classList.remove('dark')
                 }
+            });
+
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
             }
-        });
+        }
     }
 
     handleChange(event) {

@@ -21,58 +21,51 @@ export class Subjects extends React.Component {
         this.authMiddleware = new AuthMiddleware();
     }
 
-    componentDidMount() {
-        this.authMiddleware.isValid().then(res => {
-            if (!res) {
-                this.setState(prevState => ({
-                    loggedIn: false
-                }));
-                this.props.history.push('/login');
-            }
-        }).catch(err => {
+    async componentDidMount() {
+        let valid = await this.authMiddleware.isValid();
+
+        if (!valid) {
             this.setState(prevState => ({
                 loggedIn: false
             }));
             this.props.history.push('/login');
+        }
+
+        let subjectsRequest = await axios.get(apiRoute() + '/subjects');
+        this.setState({
+            subjects: subjectsRequest.data
         });
 
+        let user = await this.authMiddleware.getUser();
 
-        axios.get(apiRoute() + '/subjects').then(res => {
-            this.setState({
-                subjects: res.data
-            });
-        });
+        if ((user.flags & 0x1) === 0x1) {
+            this.setState(prevState => ({
+                dyslexia: true
+            }));
+        } else {
+            this.setState(prevState => ({
+                dyslexia: false
+            }));
+        }
 
-        this.authMiddleware.getUser().then(user => {
-            if ((user.flags & 0x1) === 0x1) {
-                this.setState(prevState => ({
-                    dyslexia: true
-                }));
-            } else {
-                this.setState(prevState => ({
-                    dyslexia: false
-                }));
-            }
-
-            //Dark Mode
-            if ((user.flags & 0x2) === 0x2) {
-                document.documentElement.classList.add('dark');
-            } else if ((user.flags & 0x4) === 0x4) {
-                document.documentElement.classList.remove('dark');
-            } else {
-                window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
-                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                        document.documentElement.classList.add('dark')
-                    } else {
-                        document.documentElement.classList.remove('dark')
-                    }
-                });
-
+        //Dark Mode
+        if ((user.flags & 0x2) === 0x2) {
+            document.documentElement.classList.add('dark');
+        } else if ((user.flags & 0x4) === 0x4) {
+            document.documentElement.classList.remove('dark');
+        } else {
+            window.matchMedia("(prefers-color-scheme: dark)").addListener(function () {
                 if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.add('dark')
+                } else {
+                    document.documentElement.classList.remove('dark')
                 }
+            });
+
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
             }
-        });
+        }
     }
 
     render() {

@@ -22,14 +22,9 @@ export class ParagraphsChild extends React.Component {
             width: progress + '%'
         }
 
-        let subjectUuid = this.props.data.subject.uuid === undefined ? "" : this.props.data.subject.uuid.replaceAll('-', '');
-        let chapterUuid = this.props.data.chapter.uuid === undefined ? "" : this.props.data.chapter.uuid.replaceAll('-', '');
-        let paragraphUuid = this.props.data.paragraph.uuid === undefined ? "" : this.props.data.paragraph.uuid.replaceAll('-', '');
-
-        if (subjectUuid === "" || chapterUuid === "" || paragraphUuid === "") {
-            location.reload();
-            return("Hold on!");
-        }
+        let subjectUuid = this.props.data.subject.uuid.replaceAll('-', '');
+        let chapterUuid = this.props.data.chapter.uuid.replaceAll('-', '');
+        let paragraphUuid = this.props.data.paragraph.uuid.replaceAll('-', '');
 
         return(
             <div className="rounded-xl p-8 w-full bg-gray-100 dark:bg-dark-primary">
