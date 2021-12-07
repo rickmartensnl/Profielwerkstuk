@@ -60,7 +60,7 @@ export class Dyslexia extends React.Component {
                     <meta name="description" content="Dyslexia test lol, fun." />
                 </MetaTags>
                 <p className={this.state.dyslexia ? 'dyslexia-font' : ''}>
-                    Test I am testing very much
+                    Leuk dyslexie lettertype
                 </p>
             </div>
         );

@@ -37,12 +37,13 @@ export class Header extends React.Component {
         ];
     }
 
-    getSolutions() {
+    getSubjects() {
         return [
             {
                 name: 'Wiskunde B',
                 description: 'Start gelijk met leren van Wiskunde B!',
-                href: '/#wib',
+                href: '/subjects/725160864e0a46d1826bb809a9b52a85',
+                hrefLanding: '/landing/subjects/725160864e0a46d1826bb809a9b52a85/',
                 icon: CalculatorIcon,
             }
         ];
@@ -84,7 +85,7 @@ export class Header extends React.Component {
                                                 'group rounded-md inline-flex items-center text-base font-medium hover:text-gray-700 dark:hover:text-dark-text-primary focus:outline-none'
                                             )}
                                         >
-                                            <span>Solutions</span>
+                                            <span>Vakken</span>
                                             <ChevronDownIcon
                                                 className={classNames(
                                                     open ? 'text-gray-700 dark:text-dark-text-primary' : 'text-gray-900 dark:text-dark-text-secondary',
@@ -106,8 +107,8 @@ export class Header extends React.Component {
                                             <Popover.Panel className="absolute z-10 -ml-4 mt-3 transform px-2 w-screen max-w-md sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2">
                                                 <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                                                     <div className="relative grid gap-6 bg-white dark:bg-dark-primary px-5 py-6 sm:gap-8 sm:p-8">
-                                                        {this.getSolutions().map((item) => (
-                                                            <Link key={item.name} to={item.href} className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 dark:hover:bg-dark-secondary">
+                                                        {this.getSubjects().map((item) => (
+                                                            <Link key={item.name} to={this.state.loggedIn ? item.href : item.hrefLanding} className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 dark:hover:bg-dark-secondary">
                                                                 <item.icon className="flex-shrink-0 h-6 w-6 text-blue-500" aria-hidden="true" />
                                                                 <div className="ml-4">
                                                                     <p className="text-base font-medium text-gray-900 dark:text-dark-text-primary">{item.name}</p>
@@ -133,11 +134,8 @@ export class Header extends React.Component {
                                 )}
                             </Popover>
 
-                            <Link to="/#pricing" className="text-base font-medium text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary">
-                                Pricing
-                            </Link>
-                            <Link to="/#docs" className="text-base font-medium text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary">
-                                Docs
+                            <Link to="/about" className="text-base font-medium text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary">
+                                Over Ons
                             </Link>
                         </Popover.Group>
                         <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
@@ -192,10 +190,10 @@ export class Header extends React.Component {
                             ) : (
                                 <div>
                                     <Link to="/login" className="whitespace-nowrap text-base font-medium text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary">
-                                        Sign in
+                                        Inloggen
                                     </Link>
                                     <Link to="/register" className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600">
-                                        Sign up
+                                        Registreren
                                     </Link>
                                 </div>)
                             }
@@ -221,15 +219,15 @@ export class Header extends React.Component {
                                     </div>
                                     <div className="-mr-2">
                                         <Popover.Button className="bg-white dark:bg-dark-primary rounded-md p-2 inline-flex items-center justify-center text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary hover:bg-gray-100 dark:hover:bg-dark-secondary focus:outline-none focus:ring-0">
-                                            <span className="sr-only">Close menu</span>
+                                            <span className="sr-only">Sluit menu</span>
                                             <XIcon className="h-6 w-6" aria-hidden="true" />
                                         </Popover.Button>
                                     </div>
                                 </div>
                                 <div className="mt-6">
                                     <nav className="grid gap-y-8">
-                                        {this.getSolutions().map((item) => (
-                                            <Link key={item.name} to={item.href} className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50 dark:hover:bg-dark-secondary">
+                                        {this.getSubjects().map((item) => (
+                                            <Link key={item.name} to={this.state.loggedIn ? item.href : item.hrefLanding} className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50 dark:hover:bg-dark-secondary">
                                                 <item.icon className="flex-shrink-0 h-6 w-6 text-blue-500" aria-hidden="true" />
                                                 <span className="ml-3 text-base font-medium text-gray-900 dark:text-dark-text-secondary">{item.name}</span>
                                             </Link>
@@ -239,13 +237,13 @@ export class Header extends React.Component {
                             </div>
                             <div className="py-6 px-5 space-y-6">
                                 <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                                    <Link to="/#pricing" className="text-base font-medium text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary ">
-                                        Pricing
-                                    </Link>
+                                    {/*<Link to="/#pricing" className="text-base font-medium text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary ">*/}
+                                    {/*    Pricing*/}
+                                    {/*</Link>*/}
 
-                                    <Link to="/#docs" className="text-base font-medium text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary ">
-                                        Docs
-                                    </Link>
+                                    {/*<Link to="/#docs" className="text-base font-medium text-gray-900 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text-primary ">*/}
+                                    {/*    Docs*/}
+                                    {/*</Link>*/}
                                 </div>
                                 <div>
                                     {this.state.loggedIn ? (
@@ -299,12 +297,12 @@ export class Header extends React.Component {
                                     ) : (
                                         <div>
                                             <Link to="/register" className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600">
-                                                Sign up
+                                                Registreren
                                             </Link>
                                             <p className="mt-6 text-center text-base font-medium text-gray-900 dark:text-dark-text-secondary">
-                                                Existing customer?{' '}
+                                                Bestaande gebruiker?{' '}
                                                 <Link to="/login" className="text-blue-500 hover:text-blue-600">
-                                                    Sign in
+                                                    Inloggen
                                                 </Link>
                                             </p>
                                         </div>)

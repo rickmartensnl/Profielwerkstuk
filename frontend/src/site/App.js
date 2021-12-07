@@ -14,6 +14,7 @@ import { Play } from './play/Play';
 import { Login, Logout, Register } from './auth/Auth';
 import { Dyslexia } from './Dyslexia';
 import { NotFound } from "./errors/404";
+import { SubjectsLanding } from "./landing/SubjectsLanding";
 
 export class App extends React.Component {
 
@@ -35,6 +36,8 @@ export class App extends React.Component {
                     <Route exact path="/subjects/:subjectUuid" component={Chapters} />
                     <Route exact path="/subjects/:subjectUuid/:chapterUuid" component={Paragraphs} />
                     <Route exact path="/subjects/:subjectUuid/:chapterUuid/:paragraphUuid/play" component={Play} />
+
+                    <Route exact path="/landing/subjects/:subjectUuid" component={SubjectsLanding} />
 
                     {/* Dyslexia test */}
                     <Route path="/dyslexia" component={Dyslexia} />
