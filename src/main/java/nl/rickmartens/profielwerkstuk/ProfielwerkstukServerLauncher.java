@@ -1,7 +1,6 @@
 package nl.rickmartens.profielwerkstuk;
 
 import nl.rickmartens.profielwerkstuk.api.APIController;
-import com.example.database.impl.*;
 import io.activej.http.AsyncServlet;
 import io.activej.http.RoutingServlet;
 import io.activej.http.StaticServlet;
