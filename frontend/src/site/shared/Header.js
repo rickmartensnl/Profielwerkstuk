@@ -82,7 +82,7 @@ export class Header extends React.Component {
                         <div className="flex justify-start lg:w-0 lg:flex-1">
                             <Link to="/">
                                 <span className="sr-only">Profielwerkstuk</span>
-                                <img className="h-8 w-auto sm:h-10" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt=""/>
+                                <img className="h-8 w-auto sm:h-10" src="logo.svg" alt=""/>
                             </Link>
                         </div>
                         <div className="-mr-2 -my-2 md:hidden">
