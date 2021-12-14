@@ -1,16 +1,18 @@
-import React from 'react';
+import React from "react";
 import MetaTags from "react-meta-tags";
-import { Header } from "./shared/Header";
-import { AuthMiddleware } from "../middlewares/AuthMiddleware";
+import { AuthMiddleware } from "../../middlewares/AuthMiddleware";
+import { apiRoute } from "../App";
+import axios from "axios";
+import { Header } from "../shared/Header";
 
-export class Home extends React.Component {
+export class SubjectsLanding extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             dyslexia: false,
-            loggedIn: false
+            loggedIn: false,
         };
 
         this.authMiddleware = new AuthMiddleware();
@@ -67,13 +69,15 @@ export class Home extends React.Component {
         return(
             <div>
                 <MetaTags>
-                    <title>Profielwerkstuk — Modernize your Learning Experience</title>
-                    <meta name="description" content="A modernized way to improve learning experiences." />
+                    <title>Profielwerkstuk — Subjects</title>
+                    <meta name="description" content="About the mathematics subject." />
                 </MetaTags>
                 <Header data={data} />
-                <p>
-                    This is the body
-                </p>
+                <div className="container mx-auto">
+                    <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
+                        Wiskunde B
+                    </h1>
+                </div>
             </div>
         );
     }
