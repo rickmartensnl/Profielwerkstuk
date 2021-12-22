@@ -74,7 +74,6 @@ public class QuestionUtil {
                     String other = asin.substring(asin.indexOf("$"));
                     other = other.substring(0, other.indexOf("]") + 1);
 
-                    System.out.println("contains another var: " + asin);
                     if (other.toLowerCase().startsWith("$sin[")) {
                         String sin = other.replaceFirst("\\$sin\\[", "");
                         sin = sin.substring(0, sin.length() - 1);
@@ -94,7 +93,7 @@ public class QuestionUtil {
             }
         }
 
-        Double answer = (Double) engine.eval(calc);
+        double answer = Double.parseDouble(engine.eval(calc).toString());
 
         return (int) Math.round(answer);
     }

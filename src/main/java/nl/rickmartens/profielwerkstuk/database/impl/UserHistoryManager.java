@@ -54,6 +54,15 @@ public class UserHistoryManager {
             throw new DatabaseOfflineException();
         }
     }
+    
+    public UserHistory getSessionByUuid(UUID uuid) throws DatabaseOfflineException {
+        try {
+            return new UserHistory(uuid);
+        } catch (SQLException exception) {
+            Sentry.captureException(exception);
+            throw new DatabaseOfflineException();
+        }
+    }
 
     public static class UserHistory implements Model {
 
@@ -146,6 +155,20 @@ public class UserHistoryManager {
             preparedStatement.setString(6, this.question.getUuid().toString());
             preparedStatement.setString(7, this.user.getUuid().toString());
             preparedStatement.executeUpdate();
+        }
+        
+        public void save() throws DatabaseOfflineException {
+            try {
+                PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("UPDATE `users_play_history` SET answer = ?, flags = ?, correctPercentage = ? WHERE uuid = ?;");
+                preparedStatement.setString(1, this.answer);
+                preparedStatement.setInt(2, this.flags);
+                preparedStatement.setDouble(3, this.correctPercentage);
+                preparedStatement.setString(4, this.uuid.toString());
+                preparedStatement.executeUpdate();
+            } catch (SQLException exception) {
+                Sentry.captureException(exception);
+                throw new DatabaseOfflineException();
+            }
         }
 
         @Override
