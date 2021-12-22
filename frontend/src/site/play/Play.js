@@ -13,6 +13,7 @@ export class Play extends React.Component {
         this.state = {
             dyslexia: false,
             loggedIn: true,
+            sessionId: "",
             paragraph: {},
             question: {},
             myAnswer: ""
@@ -20,6 +21,7 @@ export class Play extends React.Component {
 
         this.authMiddleware = new AuthMiddleware();
         this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     async componentDidMount() {
@@ -38,7 +40,10 @@ export class Play extends React.Component {
         });
 
         let questionPlayRequest = await this.authMiddleware.newOrLastQuestion();
-        questionPlayRequest = questionPlayRequest[0]
+        if (Array.isArray(questionPlayRequest)) {
+            questionPlayRequest = questionPlayRequest[0]
+        }
+        let session = questionPlayRequest;
 
         for (const variable in questionPlayRequest.variableValues) {
             const varData = questionPlayRequest.variableValues[variable]
@@ -47,6 +52,7 @@ export class Play extends React.Component {
         }
 
         this.setState({
+            sessionId: session.uuid,
             question: questionPlayRequest
         });
 
@@ -80,6 +86,28 @@ export class Play extends React.Component {
                 document.documentElement.classList.add('dark');
             }
         }
+    }
+
+    async handleSubmit() {
+        let data = {
+            answer: this.state.myAnswer,
+            sessionId: this.state.sessionId
+        }
+
+        if (data.answer === "") {
+            // TODO: Popup to remind to fill something in.
+            return;
+        }
+
+        // TODO: Popup met antwoord status.
+
+        let result = await axios.post(apiRoute() + '/users/@me/sessions', data, {
+            headers: {
+                "Authorization": localStorage.getItem("token")
+            }
+        });
+
+        console.log(result);
     }
 
     handleChange(event) {
@@ -149,6 +177,7 @@ export class Play extends React.Component {
                     </h2>
                     <label className={`mt-5 font-semibold text-sm text-gray-600 dark:text-dark-text-primary pb-1 block ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>Jouw antwoord: </label>
                     <input name="myAnswer" type="text" autoComplete="off" value={this.state.myAnswer} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`} />
+                    <button className="whitespace-nowrap px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600" onClick={this.handleSubmit}>Nakijken</button>
                 </div>
             </div>
         );
