@@ -1,9 +1,10 @@
-import React from "react";
+import React, { Fragment } from "react";
 import MetaTags from "react-meta-tags";
 import { AuthMiddleware } from "../../middlewares/AuthMiddleware";
 import { apiRoute } from "../App";
 import axios from "axios";
 import { Header } from "../shared/Header";
+import { Dialog, Transition } from '@headlessui/react'
 
 export class Play extends React.Component {
 
@@ -16,12 +17,17 @@ export class Play extends React.Component {
             sessionId: "",
             paragraph: {},
             question: {},
-            myAnswer: ""
+            myAnswer: "",
+            checkingAnswer: false,
+            isEmptyAnswer: false,
+            correctPercentage: null,
         };
 
         this.authMiddleware = new AuthMiddleware();
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.nextQuestion = this.nextQuestion.bind(this);
+        this.showSolution = this.showSolution.bind(this);
     }
 
     async componentDidMount() {
@@ -88,18 +94,35 @@ export class Play extends React.Component {
         }
     }
 
-    async handleSubmit() {
+    nextQuestion() {
+        location.reload();
+    }
+
+    showSolution() {
+        console.log("show solution")
+    }
+
+    async handleSubmit(event) {
+        event.preventDefault();
+        this.setState({
+            isEmptyAnswer: false
+        })
+
         let data = {
             answer: this.state.myAnswer,
             sessionId: this.state.sessionId
         }
 
         if (data.answer === "") {
-            // TODO: Popup to remind to fill something in.
+            this.setState({
+                isEmptyAnswer: true,
+            })
             return;
         }
 
-        // TODO: Popup met antwoord status.
+        this.setState({
+            checkingAnswer: true,
+        })
 
         let result = await axios.post(apiRoute() + '/users/@me/sessions', data, {
             headers: {
@@ -107,7 +130,9 @@ export class Play extends React.Component {
             }
         });
 
-        console.log(result);
+        this.setState({
+            correctPercentage: result.data.percentage,
+        })
     }
 
     handleChange(event) {
@@ -154,6 +179,18 @@ export class Play extends React.Component {
             );
         }
 
+        let correctness = 'FOUT';
+
+        console.log(this.state.correctPercentage)
+
+        if (this.state.correctPercentage != null) {
+            if (this.state.correctPercentage === "100.0") {
+                correctness = "GOED"
+            } else if (this.state.correctPercentage === "80.0") {
+                correctness = "BIJNA GOED"
+            }
+        }
+
         return(
             <div>
                 <MetaTags>
@@ -162,6 +199,43 @@ export class Play extends React.Component {
                 </MetaTags>
                 <Header data={data} />
                 <div className="container mx-auto">
+                    <Transition appear show={this.state.checkingAnswer} as={Fragment}>
+                        <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" onClose={this.nextQuestion}>
+                            <div className="min-h-screen px-4 text-center">
+                                <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                                    <Dialog.Overlay className="fixed inset-0" />
+                                </Transition.Child>
+
+                                <span className="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
+                                <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100" leave="ease-in duration-200" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95">
+                                    <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                        <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+                                            { this.state.correctPercentage == null ? 'We zijn je antwoord aan het nakijken...' : 'Jouw antwoord is:' }
+                                        </Dialog.Title>
+                                        <div className="mt-2">
+                                            <p className="text-sm text-gray-500 font-bold">
+                                                { this.state.correctPercentage != null ? correctness : '...' }
+                                            </p>
+                                        </div>
+
+                                        <div className="mt-4">
+                                            {
+                                                this.state.correctPercentage == null ? '' :
+                                                <>
+                                                    <button type="button" className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500" onClick={this.showSolution}>
+                                                        Toon berekening
+                                                    </button>
+                                                    <button type="button" className="float-right inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500" onClick={this.nextQuestion}>
+                                                        Volgende vraag
+                                                    </button>
+                                                </>
+                                            }
+                                        </div>
+                                    </div>
+                                </Transition.Child>
+                            </div>
+                        </Dialog>
+                    </Transition>
                     <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
                         Titel van hoofdstuk etc.
                     </h1>
@@ -175,9 +249,11 @@ export class Play extends React.Component {
                             question.question.question
                         }
                     </h2>
-                    <label className={`mt-5 font-semibold text-sm text-gray-600 dark:text-dark-text-primary pb-1 block ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>Jouw antwoord: </label>
-                    <input name="myAnswer" type="text" autoComplete="off" value={this.state.myAnswer} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`} />
-                    <button className="whitespace-nowrap px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600" onClick={this.handleSubmit}>Nakijken</button>
+                    <form onSubmit={this.handleSubmit}>
+                        <label className={`mt-5 font-semibold text-sm ${this.state.isEmptyAnswer ? 'text-red-500' : 'text-gray-600 dark:text-dark-text-primary'} pb-1 block ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>Jouw antwoord: <span className="italic">{this.state.isEmptyAnswer ? ' — Dit veld is verplicht' : ''}</span></label>
+                        <input name="myAnswer" type="text" autoComplete="off" value={this.state.myAnswer} onChange={this.handleChange} className={`border dark:border-dark-tertiary rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full dark:bg-dark-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`} />
+                        <button type="submit" className="whitespace-nowrap px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600">Nakijken</button>
+                    </form>
                 </div>
             </div>
         );
