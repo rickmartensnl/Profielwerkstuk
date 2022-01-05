@@ -15,6 +15,7 @@ import { Login, Logout, Register } from './auth/Auth';
 import { Dyslexia } from './Dyslexia';
 import { NotFound } from "./errors/404";
 import { SubjectsLanding } from "./landing/SubjectsLanding";
+import { Settings } from "./settings/Settings";
 
 export class App extends React.Component {
 
@@ -27,6 +28,8 @@ export class App extends React.Component {
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/logout" component={Logout} />
                     <Route exact path="/register" component={Register} />
+
+                    <Route exact path="/settings" component={Settings} />
 
                     <Route exact path="/app">
                         <Redirect to="/subjects" />
