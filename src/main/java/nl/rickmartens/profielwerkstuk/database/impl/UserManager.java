@@ -108,7 +108,7 @@ public class UserManager {
         @Getter @Setter private String email;
         protected transient String password;
         @Getter @Setter private String locale;
-        @Getter @Setter private int flags;
+        @Getter private int flags;
         @Expose @Getter private int public_flags;
         @Getter @Setter private transient Timestamp token_nbf;
 
@@ -181,6 +181,11 @@ public class UserManager {
             }
 
             return publicFlags;
+        }
+        
+        public void setFlags(int flags) {
+            this.flags = flags;
+            this.public_flags = calculatePublicFlags();
         }
 
         @Override

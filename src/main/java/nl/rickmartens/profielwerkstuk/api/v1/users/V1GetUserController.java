@@ -1,17 +1,25 @@
 package nl.rickmartens.profielwerkstuk.api.v1.users;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+import lombok.Getter;
 import nl.rickmartens.profielwerkstuk.api.v1.users.sessions.V1SessionController;
 import nl.rickmartens.profielwerkstuk.database.impl.UserManager;
 import nl.rickmartens.profielwerkstuk.exceptions.DatabaseOfflineException;
+import nl.rickmartens.profielwerkstuk.exceptions.DuplicateEmailException;
+import nl.rickmartens.profielwerkstuk.exceptions.InvalidSyntaxException;
 import nl.rickmartens.profielwerkstuk.middlewares.AuthMiddleware;
 import nl.rickmartens.profielwerkstuk.utils.AllowMethods;
+import nl.rickmartens.profielwerkstuk.utils.AuthenticationUtil;
 import nl.rickmartens.profielwerkstuk.utils.Controller;
 import io.activej.http.HttpMethod;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
 import io.sentry.Sentry;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -96,8 +104,58 @@ public class V1GetUserController implements Controller {
 
 
     public @NotNull HttpResponse modifyUser(HttpRequest httpRequest, UserManager.User user) {
-
-        return notImplemented501();
+        ModifyUserBody modifyUserBody = new Gson().fromJson(JsonParser.parseString(httpRequest.getBody().getString(StandardCharsets.UTF_8)), ModifyUserBody.class);
+    
+        int previousFlags = user.getFlags();
+        
+        if (modifyUserBody.getDarkMode() != null) {
+            if (modifyUserBody.getDarkMode()) {
+                previousFlags = previousFlags | 0x2;
+            } else {
+                previousFlags &= ~0x2;
+            }
+        }
+        
+        if (modifyUserBody.getDyslexiaMode() != null) {
+            if (modifyUserBody.getDyslexiaMode()) {
+                previousFlags = previousFlags | 0x1;
+            } else {
+                previousFlags &= ~0x1;
+            }
+        }
+    
+        user.setFlags(previousFlags);
+        
+        if (modifyUserBody.getEmail() != null) {
+            if (!AuthenticationUtil.isValidEmail(modifyUserBody.getEmail())) {
+                return HttpResponse.ofCode(400).withJson("{\"message\":\"400: Bad Request\",\"code\":0}");
+            }
+            
+            // TODO: Fix update email.
+        }
+    
+        try {
+            user.save();
+        } catch (DatabaseOfflineException e) {
+            e.printStackTrace();
+        }
+    
+        return HttpResponse.ok200().withJson(user.getJsonObject(true));
+    }
+    
+    @Getter
+    private class ModifyUserBody {
+        
+        protected final Boolean darkMode;
+        protected final Boolean dyslexiaMode;
+        protected final String email;
+        
+        public ModifyUserBody(@Nullable Boolean darkMode, @Nullable Boolean dyslexiaMode, @Nullable String email) {
+            this.darkMode = darkMode;
+            this.dyslexiaMode = dyslexiaMode;
+            this.email = email;
+        }
+        
     }
 
 }
