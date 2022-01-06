@@ -175,7 +175,7 @@ export class Register extends React.Component {
                             <label className="inline-flex cursor-pointer mt-1 mb-5">
                                 <input name="terms" type="checkbox" value={this.state.terms} onChange={this.handleChange} className={`form-checkbox border dark:border-dark-tertiary rounded-lg p-3 mt-1 cursor-pointer text-sm ${this.state.isNotAcceptedTerms ? 'bg-red-500 hover:bg-red-600' : 'hover:bg-gray-100 dark:bg-dark-secondary dark:hover:bg-dark-tertiary'} text-blue-500 hover:text-blue-600 dark:text-dark-secondary dark:hover:text-dark-tertiary`} />
                                 <span className={`ml-2 font-semibold text-sm ${this.state.isNotAcceptedTerms ? 'text-red-500' : 'text-gray-600 dark:text-dark-text-primary'} block`}>
-                                    Ik heb de &nbsp;
+                                    Ik heb de&nbsp;
                                     <Link to="#terms" className="text-blue-600 hover:underline">
                                         Terms of Service
                                     </Link>
