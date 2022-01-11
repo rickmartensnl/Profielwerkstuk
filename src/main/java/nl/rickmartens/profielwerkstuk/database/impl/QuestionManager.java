@@ -34,22 +34,6 @@ public class QuestionManager {
         }
     }
 	
-	public Question getRandomQuestionByParagraph(UUID paragraphUuid) throws DatabaseOfflineException {
-        try {
-            PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("SELECT * FROM `questions` WHERE paragraph_uuid = ? ORDER BY RAND();");
-            preparedStatement.setString(1, paragraphUuid.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-    
-            while (resultSet.next()) {
-                return getQuestion(UUID.fromString(resultSet.getString("uuid")));
-            }
-        } catch (SQLException exception) {
-            Sentry.captureException(exception);
-            throw new DatabaseOfflineException();
-        }
-        return null;
-    }
-	
 	public static class Question implements Model {
 
         @Expose @Getter private final UUID uuid;

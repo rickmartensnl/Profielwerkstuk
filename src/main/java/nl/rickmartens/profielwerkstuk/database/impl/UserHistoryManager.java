@@ -28,8 +28,7 @@ public class UserHistoryManager {
 
     public UserHistory createNewUserHistory(UserManager.User user) throws DatabaseOfflineException {
         try {
-            QuestionManager.Question question = QuestionManager.getQuestionManager().getRandomQuestionByParagraph(UUID.fromString("a6cc58fc-00cc-4da9-9345-ece55e9836ef"));
-            return new UserHistory(user, null, null, null, question.getUuid());
+            return new UserHistory(user, null, null, UUID.fromString("a6cc58fc-00cc-4da9-9345-ece55e9836ef"), null);
         } catch (SQLException exception) {
             Sentry.captureException(exception);
             throw new DatabaseOfflineException();
@@ -122,7 +121,7 @@ public class UserHistoryManager {
                     }
                 }
             } else if (paragraphId != null) {
-                PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("SELECT * FROM `questions` WHERE paragraph_uuid = ?;");
+                PreparedStatement preparedStatement = ProfielwerkstukServerLauncher.getConnection().prepareStatement("SELECT * FROM `questions` WHERE paragraph_uuid = ? ORDER BY RAND();");
                 preparedStatement.setString(1, paragraphId.toString());
                 ResultSet resultSet = preparedStatement.executeQuery();
 

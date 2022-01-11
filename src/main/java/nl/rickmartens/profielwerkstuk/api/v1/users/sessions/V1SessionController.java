@@ -2,13 +2,10 @@ package nl.rickmartens.profielwerkstuk.api.v1.users.sessions;
 
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import nl.rickmartens.profielwerkstuk.api.v1.auth.V1LoginController;
 import nl.rickmartens.profielwerkstuk.database.impl.QuestionManager;
 import nl.rickmartens.profielwerkstuk.database.impl.UserHistoryManager;
 import nl.rickmartens.profielwerkstuk.database.impl.UserManager;
 import nl.rickmartens.profielwerkstuk.exceptions.DatabaseOfflineException;
-import nl.rickmartens.profielwerkstuk.exceptions.InvalidSyntaxException;
-import nl.rickmartens.profielwerkstuk.exceptions.TokenCreateException;
 import nl.rickmartens.profielwerkstuk.middlewares.AuthMiddleware;
 import nl.rickmartens.profielwerkstuk.utils.AllowMethods;
 import nl.rickmartens.profielwerkstuk.utils.QuestionUtil;
@@ -26,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.script.ScriptException;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 
