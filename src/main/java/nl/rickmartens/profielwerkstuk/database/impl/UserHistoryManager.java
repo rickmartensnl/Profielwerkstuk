@@ -28,7 +28,8 @@ public class UserHistoryManager {
 
     public UserHistory createNewUserHistory(UserManager.User user) throws DatabaseOfflineException {
         try {
-            return new UserHistory(user, null, null, null, UUID.fromString("f928f9eb-4c51-11ec-9265-2e399d554045"));
+            QuestionManager.Question question = QuestionManager.getQuestionManager().getRandomQuestionByParagraph(UUID.fromString("a6cc58fc-00cc-4da9-9345-ece55e9836ef"));
+            return new UserHistory(user, null, null, null, question.getUuid());
         } catch (SQLException exception) {
             Sentry.captureException(exception);
             throw new DatabaseOfflineException();
