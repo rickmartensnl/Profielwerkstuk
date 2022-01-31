@@ -1,5 +1,6 @@
 package nl.rickmartens.profielwerkstuk.utils;
 
+import nl.rickmartens.profielwerkstuk.ProfielwerkstukServerLauncher;
 import nl.rickmartens.profielwerkstuk.database.impl.QuestionManager;
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -56,7 +57,7 @@ public class QuestionUtil {
         return null;
     }
 
-    public static int calculateAnswer(String calc) throws ScriptException {
+    public static double calculateAnswer(String calc) throws ScriptException {
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
@@ -90,12 +91,67 @@ public class QuestionUtil {
 
                     calc = calc.replaceFirst("\\{[^\"]+}|\\\\S+", String.valueOf(answer));
                 }
+            } else if (group0.toLowerCase().startsWith("$atan[")) {
+                String atan = group0.replaceFirst("\\$atan\\[", "");
+                atan = atan.substring(0, atan.length() - 1);
+    
+                if (atan.contains("$")) {
+                    String other = atan.substring(atan.indexOf("$"));
+                    other = other.substring(0, other.indexOf("]") + 1);
+        
+                    if (other.toLowerCase().startsWith("$sin[")) {
+                        String sin = other.replaceFirst("\\$sin\\[", "");
+                        sin = sin.substring(0, sin.length() - 1);
+        
+                        Double sinans = Math.toRadians(Double.parseDouble(sin));
+                        sinans = Math.sin(sinans);
+        
+                        atan = atan.replaceFirst("\\$sin\\[" + sin + "]", String.valueOf(sinans));
+                    } else if (other.toLowerCase().startsWith("$cos[")) {
+                        String cos = other.replaceFirst("\\$cos\\[", "");
+                        cos = cos.substring(0, cos.length() - 1);
+    
+                        Double cosans = Math.toRadians(Double.parseDouble(cos));
+                        cosans = Math.cos(cosans);
+    
+                        atan = atan.replaceFirst("\\$cos\\[" + cos + "]", String.valueOf(cosans));
+                    }
+                    
+                    if (atan.contains("$")) {
+                        other = atan.substring(atan.indexOf("$"));
+                        other = other.substring(0, other.indexOf("]") + 1);
+                        
+                        if (other.toLowerCase().startsWith("$sin[")) {
+                            String sin = other.replaceFirst("\\$sin\\[", "");
+                            sin = sin.substring(0, sin.length() - 1);
+        
+                            Double sinans = Math.toRadians(Double.parseDouble(sin));
+                            sinans = Math.sin(sinans);
+        
+                            atan = atan.replaceFirst("\\$sin\\[" + sin + "]", String.valueOf(sinans));
+                        } else if (other.toLowerCase().startsWith("$cos[")) {
+                            String cos = other.replaceFirst("\\$cos\\[", "");
+                            cos = cos.substring(0, cos.length() - 1);
+        
+                            Double cosans = Math.toRadians(Double.parseDouble(cos));
+                            cosans = Math.cos(cosans);
+        
+                            atan = atan.replaceFirst("\\$cos\\[" + cos + "]", String.valueOf(cosans));
+                        }
+                    }
+    
+                    Double toAtan = (Double) engine.eval(atan);
+                    Double answer = Math.atan(toAtan);
+                    answer = Math.toDegrees(answer);
+        
+                    calc = calc.replaceFirst("\\{[^\"]+}|\\\\S+", String.valueOf(answer));
+                }
             }
         }
 
         double answer = Double.parseDouble(engine.eval(calc).toString());
 
-        return (int) Math.round(answer);
+        return Math.round(answer);
     }
 
 }

@@ -77,7 +77,7 @@ public class V1SessionController implements UserController {
                 calculation = calculation.replaceAll("%%" + entry.getKey() + "%%", entry.getValue().getTheValue());
             }
             
-            int answer = QuestionUtil.calculateAnswer(calculation);
+            double answer = QuestionUtil.calculateAnswer(calculation);
     
             session.setAnswer(submitBody.answer);
             session.setFlags(0);
@@ -85,9 +85,11 @@ public class V1SessionController implements UserController {
             
             int parsedAnswer = Integer.parseInt(submitBody.answer);
             
-            if (answer == parsedAnswer) {
+            int roundedAnswer = (int) answer;
+            
+            if (roundedAnswer == parsedAnswer) {
                 session.setCorrectPercentage(100);
-            } else if (answer + 1 == parsedAnswer || answer - 1 == parsedAnswer) {
+            } else if (roundedAnswer + 1 == parsedAnswer || roundedAnswer - 1 == parsedAnswer) {
                 session.setCorrectPercentage(80);
             }
             
@@ -98,7 +100,7 @@ public class V1SessionController implements UserController {
             return HttpResponse.ofCode(400).withJson("{\"message\":\"400: Bad Request\",\"code\":0}");
         } catch (DatabaseOfflineException exception) {
             return HttpResponse.ofCode(500).withJson("{\"message\":\"500: Internal Server Error\",\"code\":\"" + Sentry.getLastEventId() + "\"}");
-        } catch (ScriptException e) {
+        } catch (ScriptException | NumberFormatException e) {
             e.printStackTrace();
             return HttpResponse.ofCode(500).withJson("{\"message\":\"500: Internal Server Error\",\"code\":\"" + Sentry.getLastEventId() + "\"}");
         }
