@@ -69,7 +69,7 @@ export class SubjectsLanding extends React.Component {
         return(
             <div>
                 <MetaTags>
-                    <title>Profielwerkstuk — Subjects</title>
+                    <title>Modern Math — Subjects</title>
                     <meta name="description" content="About the mathematics subject." />
                 </MetaTags>
                 <Header data={data} />

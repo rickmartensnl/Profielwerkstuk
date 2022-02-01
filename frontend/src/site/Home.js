@@ -67,7 +67,7 @@ export class Home extends React.Component {
         return(
             <div>
                 <MetaTags>
-                    <title>Profielwerkstuk — Modernize your Learning Experience</title>
+                    <title>Modern Math — Modernize your Learning Experience</title>
                     <meta name="description" content="A modernized way to improve learning experiences." />
                 </MetaTags>
                 <Header data={data} />

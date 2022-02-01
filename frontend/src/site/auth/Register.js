@@ -157,11 +157,11 @@ export class Register extends React.Component {
         return(
             <div className="min-h-screen bg-gray-100 dark:bg-dark-secondary flex flex-col justify-center sm:py-12">
                 <MetaTags>
-                    <title>Profielwerkstuk — Register</title>
+                    <title>Modern Math — Register</title>
                     <meta name="description" content="Create your account for a modernized learning experience." />
                 </MetaTags>
                 <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
-                    <h1 className="font-bold text-center text-2xl mb-5">Profielwerkstuk</h1>
+                    <h1 className="font-bold text-center text-2xl mb-5">Modern Math</h1>
                     <div className="bg-white dark:bg-dark-primary shadow w-full rounded-lg divide-y divide-gray-200 dark:divide-dark-tertiary">
                         <form onSubmit={this.handleRegister} className="px-5 py-7">
                             <label className={`font-semibold text-sm ${this.state.isEmptyEmail || this.state.invalidEmail ? 'text-red-500' : 'text-gray-600 dark:text-dark-text-primary'} pb-1 block`}>Email<span className="italic">{this.state.isEmptyEmail ? ' — Dit veld is verplicht' : ''}{this.state.invalidEmail ? ' — Dit is geen geldige email' : ''}</span></label>

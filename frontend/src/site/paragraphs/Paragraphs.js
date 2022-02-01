@@ -86,13 +86,13 @@ export class Paragraphs extends React.Component {
         return(
             <div>
                 <MetaTags>
-                    <title>Profielwerkstuk — Chapter — {this.state.chapter.name}</title>
+                    <title>Modern Math — Chapter — {this.state.chapter.name}</title>
                     <meta name="description" content={`Start learning for the ${this.state.chapter.name} subject!`} />
                 </MetaTags>
                 <Header data={data} />
                 <div className="container mx-auto">
                     <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                        {this.state.subject.name} - {this.state.chapter.name}
+                        {this.state.subject.name} — {this.state.chapter.name}
                     </h1>
                     <h2 className={`text-center text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
                         Selecteer een paragraaf om te leren!<br />

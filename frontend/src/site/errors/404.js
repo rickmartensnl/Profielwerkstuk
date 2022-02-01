@@ -69,7 +69,7 @@ export class NotFound extends React.Component {
         return(
             <div>
                 <MetaTags>
-                    <title>Profielwerkstuk — Page not found!</title>
+                    <title>Modern Math — Page not found!</title>
                     <meta name="description" content="A modernized way to improve learning experiences." />
                 </MetaTags>
                 <Header data={data} />

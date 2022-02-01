@@ -85,7 +85,7 @@ export class Subjects extends React.Component {
         return(
             <div>
                 <MetaTags>
-                    <title>Profielwerkstuk — Subjects</title>
+                    <title>Modern Math — Subjects</title>
                     <meta name="description" content="Select a subject to start learning from." />
                 </MetaTags>
                 <Header data={data} />

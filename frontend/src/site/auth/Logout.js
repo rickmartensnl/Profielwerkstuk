@@ -16,11 +16,11 @@ export class Logout extends React.Component {
         return(
             <div className="min-h-screen bg-gray-100 flex flex-col justify-center sm:py-12">
                 <MetaTags>
-                    <title>Profielwerkstuk — Logout</title>
+                    <title>Modern Math — Logout</title>
                     <meta name="description" content="Logout from your modernized learning experience." />
                 </MetaTags>
                 <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
-                    <h1 className="font-bold text-center text-2xl mb-5">Profielwerkstuk</h1>
+                    <h1 className="font-bold text-center text-2xl mb-5">Modern Math</h1>
                     <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
                         <form className="px-5 py-7">
                             <h2 className="font-semibold text-lg text-gray-600 pb-1 block text-center">Logging out...</h2>

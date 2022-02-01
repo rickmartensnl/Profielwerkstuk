@@ -82,7 +82,7 @@ export class Chapters extends React.Component {
         return(
             <div>
                 <MetaTags>
-                    <title>Profielwerkstuk — Subject — {this.state.subject.name}</title>
+                    <title>Modern Math — Subject — {this.state.subject.name}</title>
                     <meta name="description" content={`Start learning for the ${this.state.subject.name} subject!`} />
                 </MetaTags>
                 <Header data={data} />

@@ -153,12 +153,13 @@ export class Play extends React.Component {
         }
 
         let question = this.state.question;
+        let paragraph = this.state.paragraph;
 
         if (question.question === undefined) {
             return(
                 <div>
                     <MetaTags>
-                        <title>Profielwerkstuk — Leren</title>
+                        <title>Modern Math — Leren</title>
                         <meta name="description" content="Select a subject to start learning from." />
                     </MetaTags>
                     <Header data={data} />
@@ -191,7 +192,7 @@ export class Play extends React.Component {
         return(
             <div>
                 <MetaTags>
-                    <title>Profielwerkstuk — Leren</title>
+                    <title>Modern Math — Leren</title>
                     <meta name="description" content="Select a subject to start learning from." />
                 </MetaTags>
                 <Header data={data} />
@@ -234,7 +235,9 @@ export class Play extends React.Component {
                         </Dialog>
                     </Transition>
                     <h1 className={`text-center text-3xl font-bold dark:text-dark-text-primary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
-                        Titel van hoofdstuk etc.
+                        {
+                            `${paragraph.chapter.subject.name} — ${paragraph.chapter.name}.${paragraph.name}`
+                        }
                     </h1>
                     <h2 className={`mt-2 text-1xl text-gray-700 dark:text-dark-text-secondary ${this.state.dyslexia ? 'dyslexia-font' : ''}`}>
                         {

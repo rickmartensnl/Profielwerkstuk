@@ -176,7 +176,7 @@ export class Settings extends React.Component {
         return(
             <div>
                 <MetaTags>
-                    <title>Profielwerkstuk — Instellingen</title>
+                    <title>Modern Math — Instellingen</title>
                     <meta name="description" content="Select a subject to start learning from." />
                 </MetaTags>
                 <Header data={data} />
