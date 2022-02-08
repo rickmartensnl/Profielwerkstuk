@@ -80,6 +80,12 @@ ALTER TABLE `questions`
 ALTER TABLE `subjects`
   ADD CONSTRAINT `subjects_ibfk_1` FOREIGN KEY (`creator_uuid`) REFERENCES `users` (`uuid`) ON DELETE SET NULL ON UPDATE CASCADE;
 
+/*
+ * Copyright (c) 2022 Rick Martens - All rights not expressly granted herein are reserved
+ *
+ * This material is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.
+ */
+
 --
 -- Constraints for table `users_play_history`
 --
